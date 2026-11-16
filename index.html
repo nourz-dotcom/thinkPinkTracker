@@ -1,0 +1,791 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Think Pink</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky two-tier header (brand+account, then page nav), 1180px column, card grids, tabbed dashboards */
+:root{
+--bg:#fff6f9;--bg2:#ffeaf2;--surface:#fff;--surface2:#fff0f6;--ink:#3a1228;--muted:#785069;--line:#f4d4e2;
+--accent:#c8245f;--accent-ink:#fff;--accent-strong:#a81a4d;--accent-soft:#ffe0ec;--accent-deep:#7d1440;
+--good:#13795b;--good-soft:#dff5ec;--warn:#8a5200;--warn-soft:#fff0d1;--bad:#b3261e;--bad-soft:#fde3e1;--info:#4a4fa3;--info-soft:#e6e7fb;
+--hdr:rgba(255,246,249,.94);--shadow:0 1px 2px rgba(122,20,64,.06),0 10px 30px rgba(122,20,64,.08);--focus:#7d1440;
+--display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--body:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;--r:18px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#1b0e16;--bg2:#25131e;--surface:#2a1722;--surface2:#331c29;--ink:#fbe8f1;--muted:#cba3b7;--line:#4b2c3d;
+--accent:#ff6fa6;--accent-ink:#2a0a18;--accent-strong:#ff8db8;--accent-soft:#4a2236;--accent-deep:#ffd1e3;
+--good:#5fd3ae;--good-soft:#15382f;--warn:#f2b866;--warn-soft:#3e2e12;--bad:#ff8f86;--bad-soft:#4a1d1b;--info:#aeb2ff;--info-soft:#25274a;
+--hdr:rgba(27,14,22,.94);--shadow:0 1px 2px #0006,0 10px 30px #0005;--focus:#ffd1e3;color-scheme:dark}}
+:root[data-theme="dark"]{
+--bg:#1b0e16;--bg2:#25131e;--surface:#2a1722;--surface2:#331c29;--ink:#fbe8f1;--muted:#cba3b7;--line:#4b2c3d;
+--accent:#ff6fa6;--accent-ink:#2a0a18;--accent-strong:#ff8db8;--accent-soft:#4a2236;--accent-deep:#ffd1e3;
+--good:#5fd3ae;--good-soft:#15382f;--warn:#f2b866;--warn-soft:#3e2e12;--bad:#ff8f86;--bad-soft:#4a1d1b;--info:#aeb2ff;--info-soft:#25274a;
+--hdr:rgba(27,14,22,.94);--shadow:0 1px 2px #0006,0 10px 30px #0005;--focus:#ffd1e3;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--body);margin:0;min-height:100%}
+body.lock{overflow:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--hdr);z-index:30}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;margin:0 0 .5em;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(2.1rem,5.5vw,3.5rem);font-weight:700}h2{font-size:clamp(1.5rem,3.2vw,2.1rem)}h3{font-size:1.2rem}h4{font-size:1rem}
+p{margin:0 0 .8em}a{color:var(--accent-strong)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.muted{color:var(--muted)}.small{font-size:.86rem}.tc{text-align:center}
+.ic{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--hdr);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-width:0}
+.brand .lg{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#ff8fb8,#c8245f);color:#fff;display:grid;place-items:center;flex:none}
+.brand .lg svg{width:26px;height:26px}
+.brand b{font-family:var(--display);font-size:1.25rem;letter-spacing:.06em;display:block;line-height:1.1}
+.brand small{display:block;color:var(--muted);font-size:.72rem;line-height:1.2}
+.acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.nav{display:flex;gap:4px;overflow-x:auto;padding-bottom:10px;scrollbar-width:thin}
+.nav a{white-space:nowrap;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;padding:7px 13px;border-radius:999px}
+.nav a:hover{background:var(--accent-soft);color:var(--accent-strong)}
+.nav a.on{background:var(--accent);color:var(--accent-ink)}
+.menu-btn{display:none}
+.userchip{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-weight:600;font-size:.88rem;background:var(--accent-soft);padding:4px 12px 4px 4px;border-radius:999px}
+.av{width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.78rem;font-weight:700}
+.icon-btn{position:relative;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;text-decoration:none}
+.badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--accent);color:var(--accent-ink);font-size:.68rem;font-weight:700;display:grid;place-items:center;padding:0 4px}
+@media(max-width:900px){
+ .menu-btn{display:grid}.nav{display:none;flex-direction:column;overflow:visible}.nav.open{display:flex}
+ .nav a{padding:11px 14px}.userchip span.nm{display:none}.userchip{padding:4px}.brand small{display:none}
+}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid transparent;border-radius:999px;padding:11px 20px;font:600 .94rem var(--body);cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s,background .15s;min-height:44px}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px rgba(200,36,95,.28)}
+.btn-soft{background:var(--accent-soft);color:var(--accent-strong)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn-danger{background:var(--bad-soft);color:var(--bad)}
+.btn-sm{padding:6px 14px;min-height:36px;font-size:.84rem}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+/* layout */
+main{padding-block:28px 56px;min-height:70vh}
+main.enter>*{animation:rise .45s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+section.blk{margin-top:52px}
+.eyebrow{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-strong);background:var(--accent-soft);padding:5px 12px;border-radius:999px;margin-bottom:14px}
+.lead{font-size:1.12rem;color:var(--muted);max-width:60ch}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);min-width:0}
+.card.soft{background:var(--surface2);box-shadow:none}
+.card h3{display:flex;align-items:center;gap:9px}
+.ico{width:46px;height:46px;border-radius:14px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;margin-bottom:12px}
+.ico .ic{width:24px;height:24px}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.sec-h h2{margin:0}
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;background:linear-gradient(135deg,var(--bg2),var(--surface2) 55%,var(--accent-soft));border:1px solid var(--line);border-radius:28px;padding:clamp(22px,5vw,52px)}
+.hero h1{margin-bottom:.35em}
+.slogan{font-family:var(--display);font-size:1.3rem;font-weight:600;color:var(--accent-strong)}
+@media(max-width:860px){.hero{grid-template-columns:1fr}}
+.flow{stroke-dasharray:6 8;animation:dash 1.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-28}}
+.float{animation:flo 5s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes flo{50%{transform:translateY(-6px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+.stat{text-align:center}
+.stat b{display:block;font:700 2.2rem var(--display);color:var(--accent-strong);font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--warn-soft);color:var(--warn);padding:3px 10px;border-radius:999px}
+/* pills & banners */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.76rem;font-weight:700;padding:3px 11px;border-radius:999px;background:var(--accent-soft);color:var(--accent-strong);white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)}.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}.pill.info{background:var(--info-soft);color:var(--info)}
+.note{display:flex;gap:12px;align-items:flex-start;border-radius:14px;padding:14px 16px;background:var(--info-soft);color:var(--ink);margin:14px 0}
+.note .ic{color:var(--info);margin-top:3px}
+.note.warn{background:var(--warn-soft)}.note.warn .ic{color:var(--warn)}
+.note.bad{background:var(--bad-soft)}.note.bad .ic{color:var(--bad)}
+.note.good{background:var(--good-soft)}.note.good .ic{color:var(--good)}
+.note p{margin:0}
+/* forms */
+.form{display:grid;gap:14px}
+.field{display:grid;gap:5px}
+.field label,.lbl{font-weight:600;font-size:.88rem}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px 13px;width:100%;min-height:44px}
+textarea{min-height:90px;resize:vertical}
+input[type=checkbox],input[type=radio]{width:auto;min-height:0;accent-color:var(--accent)}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px}
+.opt{display:flex;gap:10px;align-items:center;padding:10px 13px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;background:var(--surface)}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.err{color:var(--bad);font-weight:600;min-height:1.2em;margin:0}
+.meter{height:6px;border-radius:3px;background:var(--line);overflow:hidden}.meter i{display:block;height:100%;width:0;background:var(--bad);transition:width .2s,background .2s}
+.narrow{max-width:640px;margin-inline:auto}
+/* tabs */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px;background:var(--surface2);border-radius:999px;border:1px solid var(--line);width:max-content;max-width:100%;margin-bottom:20px}
+.tabs button{border:0;background:none;color:var(--muted);font:600 .86rem var(--body);padding:9px 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--accent);color:var(--accent-ink)}
+/* lists */
+.li{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}.li .grow{flex:1 1 220px;min-width:0}
+.li h4{margin:0 0 2px}
+.date-box{width:56px;text-align:center;border-radius:14px;background:var(--accent-soft);color:var(--accent-strong);padding:6px 0;flex:none;line-height:1.1}
+.date-box b{display:block;font:700 1.35rem var(--display)}.date-box span{font-size:.68rem;font-weight:700;text-transform:uppercase}
+.tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.tbl th,.tbl td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.scroll{overflow-x:auto}
+/* timeline */
+.prog{display:flex;gap:0;margin:6px 0 22px;overflow-x:auto;padding-bottom:4px}
+.prog div{flex:1 0 96px;text-align:center;position:relative;font-size:.74rem;font-weight:600;color:var(--muted)}
+.prog div::before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:4px;background:var(--line)}
+.prog div:first-child::before{display:none}
+.prog i{position:relative;z-index:1;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;margin:0 auto 6px;background:var(--surface);border:3px solid var(--line);font-style:normal;font-size:.8rem}
+.prog .done i{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}.prog .done::before,.prog .active::before{background:var(--accent)}
+.prog .active i{border-color:var(--accent);box-shadow:0 0 0 5px var(--accent-soft)}.prog .active,.prog .done{color:var(--ink)}
+details.stage{border:1px solid var(--line);border-radius:16px;background:var(--surface);margin-bottom:10px;overflow:hidden}
+details.stage summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px 18px;font-weight:700}
+details.stage summary::-webkit-details-marker{display:none}
+details.stage summary .sp{flex:1;min-width:0}
+details.stage.active{border-color:var(--accent)}
+.stage-b{padding:4px 18px 18px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.stage-b h5{margin:0 0 4px;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.ent{padding:8px 0;border-top:1px dashed var(--line);font-size:.9rem}.ent:first-of-type{border-top:0}
+.by{font-size:.76rem;color:var(--muted)}
+/* flip cards */
+.flip{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:20px;cursor:pointer;text-align:left;font:inherit;color:inherit;min-height:150px;box-shadow:var(--shadow)}
+.flip .fact{display:none}.flip.open .myth{display:none}.flip.open .fact{display:block}.flip.open{background:var(--good-soft)}
+.mf{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+/* quiz */
+.qopt{display:block;width:100%;text-align:left;font:600 .95rem var(--body);color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;margin-top:10px;cursor:pointer}
+.qopt:hover:not(:disabled){border-color:var(--accent)}.qopt.ok{background:var(--good-soft);border-color:var(--good)}.qopt.no{background:var(--bad-soft);border-color:var(--bad)}
+.qbar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.qbar i{display:block;height:100%;background:var(--accent)}
+/* month nodes */
+.mon{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px}
+.mn{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--surface);text-align:center}
+.mn i{display:block;width:14px;height:14px;border-radius:50%;margin:0 auto 8px;background:var(--good)}
+.mn.new i{background:#e6a23c}.mn.ongoing i{background:var(--bad)}.mn.empty i,.mn.none i,.mn.open i{background:var(--line)}
+.mn b{display:block;font-size:.84rem}.mn span{font-size:.74rem;color:var(--muted)}
+/* dashboards */
+.dash-h{border-radius:26px;padding:clamp(20px,4vw,36px);margin-bottom:22px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+.dash-h.prev{background:linear-gradient(120deg,var(--bg2),var(--accent-soft));border:1px solid var(--line)}
+.dash-h.canc{background:linear-gradient(120deg,#7d1440,#c8245f);color:#fff}
+.dash-h.canc h1,.dash-h.canc p{color:#fff}.dash-h h1{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:.2em}
+.dash-h.canc .pill{background:rgba(255,255,255,.2);color:#fff}
+.split{display:grid;grid-template-columns:290px 1fr;gap:18px;align-items:start}
+@media(max-width:860px){.split{grid-template-columns:1fr}}
+.pt{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.pt.on{border-color:var(--accent);background:var(--accent-soft)}.pt small{display:block;color:var(--muted)}
+.gate{max-width:560px;margin:30px auto;text-align:center}
+.gate-ic{width:60px;height:60px;border-radius:50%;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;margin:0 auto 14px}
+.gate-ic .ic{width:28px;height:28px}
+.chart text{fill:var(--muted);font:11px var(--body)}.chart .ln{stroke:var(--accent);stroke-width:3;fill:none}.chart .gr{stroke:var(--line)}
+.chart .band{fill:var(--good-soft)}.chart circle{fill:var(--surface);stroke:var(--accent);stroke-width:3}
+/* modal & toast */
+#modal .ov{position:fixed;inset:0;background:rgba(40,8,25,.55);z-index:60}
+#modal .dlg{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100% - 24px));max-height:calc(100% - 32px);overflow:auto;background:var(--surface);color:var(--ink);border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.4);animation:rise .25s ease}
+.dlg-h{display:flex;justify-content:space-between;align-items:center;padding:18px 22px 0}.dlg-h h3{margin:0}.dlg-b{padding:16px 22px 22px}
+pre.rep{white-space:pre-wrap;font:.84rem/1.55 var(--body);background:var(--surface2);border-radius:12px;padding:14px;margin:0 0 10px}
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:80;display:grid;gap:8px;width:max-content;max-width:calc(100% - 32px)}
+.toast{background:var(--accent-deep);color:var(--bg);padding:11px 18px;border-radius:999px;font-weight:600;box-shadow:var(--shadow);animation:rise .25s ease}
+footer{border-top:1px solid var(--line);background:var(--surface2);padding-block:34px calc(34px + env(safe-area-inset-bottom,0px))}
+.fgrid{display:grid;grid-template-columns:2fr repeat(auto-fit,minmax(140px,1fr));gap:24px}
+footer a{display:block;color:var(--muted);text-decoration:none;padding:3px 0}footer a:hover{color:var(--accent-strong)}
+footer h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.unread{border-left:4px solid var(--accent)}
+.chipbox{display:grid;gap:12px}
+.step{display:flex;gap:14px;align-items:flex-start}.step b.n{width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}
+.sw{position:relative;width:46px;height:26px;flex:none}.sw input{opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:1}
+.sw i{position:absolute;inset:0;border-radius:13px;background:var(--line);transition:.2s}.sw i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+i{background:var(--accent)}.sw input:checked+i::after{transform:translateX(20px)}
+.sw input:focus-visible+i{outline:3px solid var(--focus);outline-offset:2px}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="rib" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M26 30C12 14 22 5 32 5s20 9 6 25"/><path d="M38 30 18 58"/><path d="M26 30 46 58"/></g></symbol></defs></svg>
+<header class="top" id="top"></header>
+<main class="wrap" id="main"></main>
+<footer id="foot"></footer>
+<div id="modal" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+const KEY='thinkpink.v2';
+const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=p=>p+Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>{const a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2])};
+const today=()=>ymd(new Date());
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return ymd(d)};
+const diffDays=(a,b)=>Math.round((parse(a)-parse(b))/864e5);
+const fmt=s=>s?parse(s).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+const mkey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1);
+const curMonth=()=>mkey(new Date());
+const addM=(k,n)=>{const a=k.split('-').map(Number);return mkey(new Date(a[0],a[1]-1+n,1))};
+const mlabel=(k,sh)=>{const a=k.split('-').map(Number);return new Date(a[0],a[1]-1,1).toLocaleDateString('en-GB',{month:sh?'short':'long',year:'numeric'})};
+const pwh=s=>{let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))>>>0;return 'h'+h.toString(36)};
+const I={
+calendar:'<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>',
+user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
+heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>',
+clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+check:'<path d="M20 6 9 17l-5-5"/>',plus:'<path d="M12 5v14M5 12h14"/>',
+edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+steth:'<path d="M4 3v6a5 5 0 0 0 10 0V3M9 14v1a5 5 0 0 0 10 0v-2"/><circle cx="19" cy="11" r="2"/>',
+activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',
+chip:'<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/>',
+alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/>',
+info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',menu:'<path d="M3 6h18M3 12h18M3 18h18"/>',
+copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+send:'<path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/>',
+trend:'<path d="m23 6-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>',
+logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>'};
+const ic=(n,c)=>'<svg class="ic '+(c||'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[n]+'</svg>';
+const rib=(s)=>'<svg viewBox="0 0 64 64" width="'+(s||26)+'" height="'+(s||26)+'" aria-hidden="true"><use href="#rib"/></svg>';
+const STAGES=['Initial Diagnosis','Medical Tests','Treatment Plan','Treatment Progress','Follow-up Appointments','Recovery Monitoring'];
+const STATUS=[{k:'treatment',t:'Currently Receiving Treatment',d:'Your care team is delivering active treatment.'},{k:'followup',t:'Under Medical Follow-Up',d:'Your team is checking in regularly after or between treatments.'},{k:'recovery',t:'Recovery Monitoring',d:'Your team is monitoring your recovery with scheduled tests and visits.'}];
+const ATYPES=['Clinical breast exam','Mammogram','Breast ultrasound','Breast MRI','Doctor consultation','Follow-up visit','Blood test','Treatment session','Other'];
+const REM=['Your health matters! Don’t forget your upcoming medical appointment.','Taking care of yourself is important. Stay up to date with your checkups.','Your next screening reminder is approaching!'];
+const PATTERN_MSG='We noticed a change in your monthly health records. Please consider contacting your healthcare provider for a medical evaluation.';
+const REVIEW_MSG='Your latest medical results need further review. Please contact your healthcare provider.';
+const CHANGES=['A new lump in the breast or underarm','Change in breast size or shape','Skin changes (dimpling, redness, puckering)','Unusual nipple discharge or change','Pain or tenderness that is new for me','Something else that feels unusual for me'];
+const TIPS=['Get to know how your breasts normally look and feel, so a change is easier to notice.','Put your next screening date in the calendar and keep your doctor’s advice on timing.','Regular movement and limiting alcohol are everyday habits linked with better breast health.','Write down family health history and share it with your doctor at your next visit.','A change that lasts more than a couple of weeks deserves a conversation with a healthcare professional.','Most breast lumps are not cancer, and every new lump is still worth getting checked.','Ask your doctor which screening tests suit your age and history.','Wear a note in your phone: “Monthly check-in” so it becomes a habit.','Bring a trusted person to appointments if it helps you feel supported.','Bring your questions in writing. Appointments move fast.','Rest and stress care count as health care too.','Share this reminder with a friend or family member today.'];
+
+let S=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s&&s.v===2)return s}}catch(e){}const s=seed();try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}return s}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const user=id=>S.users.find(u=>u.id===id);
+const me=()=>S.session?user(S.session):null;
+const myDoc=u=>u&&u.authorized&&u.authorized.length?user(u.authorized[0]):null;
+
+function seed(){
+ const T=today(),cm=curMonth();
+ const st={v:2,session:null,users:[],appts:[],notifs:[],monthly:[],shared:[],rec:{},audit:[],messages:[],pnotes:[],quizBest:null};
+ const pw=pwh('Demo#1234');
+ const mk=o=>Object.assign({pw:pw,created:addDays(T,-200),phone:'+971 50 123 4567',emergency:'',notifyMethod:'both',remind:3,authorized:[],chip:false,dxRequest:null},o);
+ st.users.push(
+ mk({id:'dr1',role:'doctor',name:'Dr. Sara Al Mansoori',email:'doctor@demo.thinkpink',dob:'1981-04-12',specialty:'Breast Oncology',clinic:'Think Pink Partner Clinic (demo)'}),
+ mk({id:'dr2',role:'doctor',name:'Dr. Omar Haddad',email:'omar@demo.thinkpink',dob:'1978-09-02',specialty:'Breast Imaging',clinic:'Think Pink Imaging Centre (demo)'}),
+ mk({id:'p1',role:'patient',type:'prevention',name:'Amira Hassan',email:'amira@demo.thinkpink',dob:'1990-06-21',emergency:'Yusuf Hassan, +971 50 765 4321',authorized:['dr1'],created:addDays(T,-175)}),
+ mk({id:'p2',role:'patient',type:'cancer',name:'Layla Rahman',email:'layla@demo.thinkpink',dob:'1976-02-14',emergency:'Omar Rahman, +971 55 222 3344',authorized:['dr1'],chip:true}),
+ mk({id:'p3',role:'patient',type:'cancer',name:'Nour Khalid',email:'nour@demo.thinkpink',dob:'1984-11-30',emergency:'Salma Khalid, +971 52 888 1100',authorized:['dr1'],created:addDays(T,-70)}),
+ mk({id:'p4',role:'patient',type:'cancer',name:'Maryam Saeed',email:'maryam@demo.thinkpink',dob:'1969-07-08',authorized:['dr1'],created:addDays(T,-6)}));
+ const D1='Dr. Sara Al Mansoori',D2='Dr. Omar Haddad';
+ const E=(stage,kind,date,doctor,title,text,x)=>Object.assign({id:uid('e'),stage:stage,kind:kind,date:date,doctor:doctor,title:title,text:text},x||{});
+ const R=(n,t,date,doc,size,sum)=>({id:uid('r'),name:n,title:t,date:date,doctor:doc,size:size,summary:sum});
+ let d0=addDays(T,-210);
+ st.rec.p2={verified:true,stage:'Stage 2',stageBy:D1,stageDate:d0,dxDate:d0,status:'followup',cur:4,
+ entries:[
+ E(0,'update',d0,D1,'Diagnosis confirmed','Biopsy results reviewed and diagnosis confirmed. Stage recorded after imaging and pathology review.'),
+ E(0,'note',d0,D1,'Doctor note','We discussed the findings and next steps with you and your family, and answered your questions.'),
+ E(1,'test',addDays(d0,8),D2,'Breast MRI','Imaging reviewed by the care team and used to plan treatment.',{value:'Report filed',unit:'',ref:'',flag:'ok'}),
+ E(1,'test',addDays(d0,9),D1,'Hemoglobin','Routine pre-treatment blood work.',{value:'12.4',unit:'g/dL',ref:'12.0–15.5',flag:'ok'}),
+ E(2,'treatment',addDays(d0,18),D1,'Treatment plan','Surgery, then radiation therapy and hormone therapy. Plan agreed with you.',{tstatus:'Planned'}),
+ E(2,'update',addDays(d0,18),D1,'Plan reviewed','Tumour board agreed the plan. Surgery date set.'),
+ E(3,'treatment',addDays(d0,30),D1,'Lumpectomy','Procedure completed without complications.',{tstatus:'Completed'}),
+ E(3,'test',addDays(d0,60),D1,'Hemoglobin','Mid-treatment check.',{value:'12.0',unit:'g/dL',ref:'12.0–15.5',flag:'ok'}),
+ E(3,'treatment',addDays(d0,62),D1,'Radiation therapy','15 sessions over three weeks.',{tstatus:'Completed'}),
+ E(3,'treatment',addDays(d0,95),D1,'Hormone therapy','Daily tablet, reviewed at every visit.',{tstatus:'In progress'}),
+ E(3,'test',addDays(d0,120),D1,'Hemoglobin','Routine check.',{value:'12.3',unit:'g/dL',ref:'12.0–15.5',flag:'ok'}),
+ E(4,'test',addDays(d0,175),D1,'Hemoglobin','Follow-up blood work.',{value:'12.8',unit:'g/dL',ref:'12.0–15.5',flag:'ok'}),
+ E(4,'followup',addDays(T,-20),D1,'Follow-up note','Healing well. Next imaging in about three months. Keep attending scheduled visits.'),
+ E(4,'update',addDays(T,-20),D1,'Follow-up visit','Examination unremarkable. Continue hormone therapy.')],
+ reports:[R('pathology-report.pdf','Pathology report',d0,D1,'412 KB','Pathology findings used to confirm the diagnosis. (Fictional demo summary.)'),R('mri-report.pdf','Breast MRI report',addDays(d0,8),D2,'1.2 MB','Imaging report reviewed by the care team. (Fictional demo summary.)'),R('radiation-summary.pdf','Radiation therapy summary',addDays(d0,84),D1,'268 KB','Summary of the completed radiation course. (Fictional demo summary.)')]};
+ let n0=addDays(T,-62);
+ st.rec.p3={verified:true,stage:'Stage 1',stageBy:D1,stageDate:n0,dxDate:n0,status:'treatment',cur:3,
+ entries:[E(0,'update',n0,D1,'Diagnosis confirmed','Diagnosis confirmed after biopsy and imaging.'),E(1,'test',addDays(n0,7),D2,'Breast ultrasound','Reviewed by the care team.',{value:'Report filed',unit:'',ref:'',flag:'ok'}),E(2,'treatment',addDays(n0,14),D1,'Treatment plan','Surgery followed by radiation therapy.',{tstatus:'Planned'}),E(3,'treatment',addDays(n0,25),D1,'Lumpectomy','Procedure completed.',{tstatus:'Completed'}),E(3,'treatment',addDays(n0,45),D1,'Radiation therapy','Course in progress.',{tstatus:'In progress'}),E(3,'note',addDays(T,-6),D1,'Doctor note','Tolerating treatment well. Skin care advice reviewed.')],
+ reports:[R('pathology-report.pdf','Pathology report',n0,D1,'390 KB','Fictional demo summary.')]};
+ st.rec.p4={verified:false,stage:null,dxDate:addDays(T,-6),status:'treatment',cur:0,entries:[],reports:[]};
+ st.appts.push(
+ {id:uid('a'),userId:'p1',type:'Clinical breast exam',date:addDays(T,-27),time:'10:00',place:'Think Pink Partner Clinic',notes:'',status:'completed',result:'No concerns reported at the exam.',remind:3,by:'You'},
+ {id:uid('a'),userId:'p1',type:'Doctor consultation',date:addDays(T,2),time:'11:30',place:'Think Pink Partner Clinic',notes:'Ask about tenderness reported in earlier months.',status:'upcoming',remind:3,by:'You'},
+ {id:uid('a'),userId:'p1',type:'Mammogram',date:addDays(T,21),time:'09:30',place:'Think Pink Imaging Centre',notes:'Bring previous results.',status:'upcoming',remind:7,by:'You'},
+ {id:uid('a'),userId:'p2',type:'Follow-up visit',date:addDays(T,-20),time:'09:00',place:'Think Pink Partner Clinic',notes:'',status:'completed',result:'Healing well.',remind:3,by:D1},
+ {id:uid('a'),userId:'p2',type:'Follow-up visit',date:addDays(T,11),time:'09:30',place:'Think Pink Partner Clinic',notes:'Hormone therapy review.',status:'upcoming',remind:3,by:D1},
+ {id:uid('a'),userId:'p2',type:'Breast MRI',date:addDays(T,40),time:'13:00',place:'Think Pink Imaging Centre',notes:'Three-month imaging.',status:'upcoming',remind:7,by:D1},
+ {id:uid('a'),userId:'p3',type:'Treatment session',date:addDays(T,3),time:'08:30',place:'Think Pink Partner Clinic',notes:'Radiation therapy.',status:'upcoming',remind:3,by:D1});
+ const mr=(n,o)=>st.monthly.push(Object.assign({id:uid('m'),userId:'p1',month:addM(cm,-n),status:'final',sym:'no',changes:[],note:'',results:'',concerns:'',auto:false,submitted:true},o));
+ mr(5,{note:'Nothing unusual this month.'});
+ mr(4,{note:'Nothing unusual.',results:'Routine online health questionnaire completed.'});
+ mr(3,{sym:'yes',changes:[CHANGES[4]],note:'Mild tenderness in the left breast for a few days.',concerns:'Could this be related to my cycle? I’d like to ask my doctor.'});
+ mr(2,{sym:'yes',changes:[CHANGES[4]],note:'The tenderness is still there some days.',concerns:'Still want to discuss this with my doctor.'});
+ mr(1,{note:'Tenderness has settled. Clinical breast exam done.',results:'Clinical breast exam: no concerns reported.'});
+ st.shared.push({id:uid('s'),userId:'p1',month:addM(cm,-3),doctorId:'dr1',date:addDays(T,-60)},{id:uid('s'),userId:'p1',month:addM(cm,-2),doctorId:'dr1',date:addDays(T,-28)});
+ const nf=(u,k,t,b,ago,rd)=>st.notifs.push({id:uid('n'),userId:u,kind:k,title:t,body:b,date:addDays(T,-ago),ts:Date.now()-ago*864e5,read:!!rd,via:['web'],key:null});
+ nf('p2','doctor','New update from '+D1,'Follow-up visit notes were added to your record.',20,true);
+ nf('p2','report','New medical report','Radiation therapy summary is available in My Medical Reports.',120,true);
+ nf('p1','screening','Monthly breast health check-in','Take a few minutes to record how you are doing this month.',32,true);
+ nf('p1','doctor','Doctor message',D1+' acknowledged your shared monthly record.',27,true);
+ nf('dr1','account','New diagnosis verification request','Maryam Saeed is waiting for diagnosis verification.',5,false);
+ st.audit.push({id:uid('x'),userId:'p2',who:D1,action:'Opened medical record',date:addDays(T,-20)},{id:uid('x'),userId:'p1',who:D1,action:'Viewed shared monthly record',date:addDays(T,-27)});
+ return st;
+}
+function notify(userId,kind,title,body,key,via){
+ if(key&&S.notifs.some(n=>n.userId===userId&&n.key===key))return;
+ const u=user(userId);const v=via||(u&&u.notifyMethod==='email'?['email']:u&&u.notifyMethod==='web'?['web']:['web','email']);
+ S.notifs.unshift({id:uid('n'),userId:userId,kind:kind,title:title,body:body,date:today(),ts:Date.now(),read:false,via:v,key:key||null});
+}
+function monthEntries(uid_,k){return S.monthly.find(m=>m.userId===uid_&&m.month===k)}
+const flagged=r=>!!r&&(r.sym==='yes'||(r.changes||[]).length>0);
+function series(uid_,n){const cm=curMonth(),out=[];let prev=false;
+ for(let i=(n||6)-1;i>=0;i--){const k=addM(cm,-i);const r=monthEntries(uid_,k);const u=user(uid_);
+  const before=u&&k<u.created.slice(0,7);const f=flagged(r);
+  let s=before?'none':!r?(k===cm?'open':'empty'):f?(prev?'ongoing':'new'):(r.submitted?'clear':'empty');
+  out.push({k:k,rec:r,flag:f,state:s});prev=f}
+ return out}
+function tick(){
+ const T=today(),cm=curMonth();
+ S.users.filter(u=>u.role==='patient').forEach(u=>{
+  S.appts.filter(a=>a.userId===u.id&&a.status==='upcoming').forEach((a,i)=>{
+   const left=diffDays(a.date,T);const r=a.remind||u.remind||3;
+   if(left>=0&&left<=r){const when=left===0?'today':left===1?'tomorrow':'in '+left+' days';
+    notify(u.id,'appointment','Upcoming: '+a.type+' '+when,REM[(a.date.length+left+i)%3]+' '+fmt(a.date)+' at '+a.time+'.','rem:'+a.id+':'+a.date)}});
+  if(u.type==='prevention'){
+   notify(u.id,'screening','Monthly breast health check-in for '+mlabel(cm),TIPS[parseInt(cm.slice(5),10)-1]+' Follow your doctor’s recommended screening schedule.','monthly:'+cm);
+   const start=u.created.slice(0,7);
+   for(let k=start;k<cm;k=addM(k,1)){
+    let r=monthEntries(u.id,k);
+    if(!r){S.monthly.push({id:uid('m'),userId:u.id,month:k,status:'final',sym:'no',changes:[],note:'',results:'',concerns:'',auto:true,submitted:false})}
+    else if(r.status==='draft')r.status='final'}
+   const sr=series(u.id,6);const last=sr.filter(x=>x.flag).pop();
+   if(last)notify(u.id,'screening','Change noted in your monthly records',PATTERN_MSG,'pattern:'+last.k);
+  }});
+ save();
+}
+function addAudit(userId,who,action){const last=S.audit[S.audit.length-1];if(last&&last.userId===userId&&last.who===who&&last.action===action&&last.date===today())return;S.audit.push({id:uid('x'),userId:userId,who:who,action:action,date:today()})}
+const unreadCount=()=>{const u=me();return u?S.notifs.filter(n=>n.userId===u.id&&!n.read&&n.via.includes('web')).length:0};
+const UI={awTab:'know',remTab:'upcoming',notifTab:'all',dashTab:'overview',docTab:'overview',docPt:null,menu:false,sent:false,affirm:0,
+ quiz:{i:0,sel:null,score:0,done:false},chip:{consent:false,tapped:false,tab:'history',log:[]},resetArm:false};
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3200)}
+function modal(title,body){const m=$('#modal');m.innerHTML='<div class="ov" data-act="close"></div><div class="dlg" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="dlg-h"><h3>'+esc(title)+'</h3><button class="icon-btn" data-act="close" aria-label="Close">'+ic('x')+'</button></div><div class="dlg-b">'+body+'</div></div>';m.hidden=false;document.body.classList.add('lock');const f=$('input:not([type=hidden]),select,textarea',m);if(f)f.focus()}
+function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';document.body.classList.remove('lock')}
+const NAV=[['home','Home'],['about','About Us'],['awareness','Breast Cancer Awareness'],['reminders','Screening Reminders'],['chip','Smart Medical Chip'],['journey','Cancer Journey'],['recovery','Recovery Tracker'],['patient','Patient Dashboard'],['doctor','Doctor Dashboard'],['contact','Contact Us']];
+const route=()=>((location.hash||'#home').slice(1)||'home');
+function renderHeader(){
+ const u=me(),r=route();
+ $('#top').innerHTML='<div class="wrap"><div class="bar"><a class="brand" href="#home"><span class="lg">'+rib(26)+'</span><span><b>THINK PINK</b><small>Your Health, Our Priority</small></span></a><div class="acts">'+
+ (u?'<a class="icon-btn" href="#notifications" aria-label="Notifications">'+ic('bell')+(unreadCount()?'<span class="badge">'+unreadCount()+'</span>':'')+'</a><a class="userchip" href="#'+(u.role==='doctor'?'doctor':'patient')+'"><span class="av">'+esc(u.name.replace('Dr. ','').charAt(0))+'</span><span class="nm">'+esc(u.name.split(' ').slice(0,2).join(' '))+'</span></a><button class="icon-btn" data-act="logout" aria-label="Log out" title="Log out">'+ic('logout')+'</button>':'<a class="btn btn-ghost btn-sm" href="#login">Log in</a><a class="btn btn-primary btn-sm" href="#register">Sign up</a>')+
+ '<button class="icon-btn menu-btn" data-act="menu" aria-label="Menu" aria-expanded="'+UI.menu+'">'+ic('menu')+'</button></div></div>'+
+ '<nav class="nav'+(UI.menu?' open':'')+'" aria-label="Main">'+NAV.map(n=>'<a href="#'+n[0]+'"'+(r===n[0]?' class="on" aria-current="page"':'')+'>'+n[1]+'</a>').join('')+'</nav></div>';
+}
+function renderFooter(){
+ $('#foot').innerHTML='<div class="wrap"><div class="fgrid"><div><div class="brand"><span class="lg">'+rib(26)+'</span><span><b>THINK PINK</b></span></div><p class="small muted" style="margin-top:12px;max-width:44ch">Think Pink is a demonstration platform. It does not give medical advice, diagnose, or treat. All people, records and numbers shown are fictional examples. Only healthcare professionals can evaluate symptoms, stage cancer, or interpret results.</p></div>'+
+ '<div><h4>Explore</h4><a href="#awareness">Awareness</a><a href="#quiz">Test Your Knowledge</a><a href="#support">You Are Not Alone</a><a href="#chip">Smart Medical Chip</a></div>'+
+ '<div><h4>Account</h4><a href="#register">Create account</a><a href="#login">Log in</a><a href="#privacy">Privacy &amp; security</a><a href="#notifications">Notifications</a></div>'+
+ '<div><h4>Help</h4><a href="#contact">Contact us</a><a href="#about">About us</a></div></div><p class="small muted" style="margin-top:22px">“Early Detection, Better Protection!” · Together, We Can Make a Difference.</p></div>';
+}
+function demoBtns(role){
+ if(role==='doctor')return '<button class="btn btn-soft btn-sm" data-act="demo" data-id="dr1">Dr. Sara (Oncology)</button>';
+ return '<button class="btn btn-soft btn-sm" data-act="demo" data-id="p1">Amira · Prevention</button><button class="btn btn-soft btn-sm" data-act="demo" data-id="p2">Layla · Cancer patient</button>';
+}
+function gate(msg,role){return '<section class="gate card"><span class="gate-ic">'+ic('lock')+'</span><h2>Please sign in</h2><p>'+msg+'</p><div class="btns" style="justify-content:center"><a class="btn btn-primary" href="#login">Log in</a><a class="btn btn-soft" href="#register">Create account</a></div><p class="small muted">Just looking around? Open a demo account with fictional data:</p><div class="btns" style="justify-content:center">'+demoBtns(role)+'</div></section>'}
+function wrongRole(role){const u=me();return '<section class="gate card"><span class="gate-ic">'+ic('shield')+'</span><h2>'+(role==='patient'?'Patient accounts only':'Doctor accounts only')+'</h2><p>You are signed in as '+esc(u.name)+' ('+u.role+'). This page is limited to '+role+' accounts to protect medical privacy.</p><div class="btns" style="justify-content:center"><a class="btn btn-primary" href="#'+(u.role==='doctor'?'doctor':'patient')+'">Go to my dashboard</a><button class="btn btn-ghost" data-act="logout">Log out</button></div></section>'}
+function needPatient(msg){const u=me();if(!u)return gate(msg,'patient');if(u.role!=='patient')return wrongRole('patient');return null}
+function chipArt(){return '<svg viewBox="0 0 560 360" role="img" aria-label="Illustration of a small medical chip securely connected to a healthcare dashboard" style="width:100%;height:auto"><defs><linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8fb8"/><stop offset="1" stop-color="#a81a4d"/></linearGradient></defs>'+
+ '<circle cx="290" cy="190" r="150" fill="var(--accent-soft)" opacity=".6"/>'+
+ '<rect x="250" y="40" width="290" height="250" rx="22" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>'+
+ '<circle cx="274" cy="64" r="5" fill="#ff8fb8"/><circle cx="292" cy="64" r="5" fill="var(--line)"/><circle cx="310" cy="64" r="5" fill="var(--line)"/>'+
+ '<text x="270" y="102" style="font:700 13px var(--body)" fill="var(--ink)">My Medical Profile</text>'+
+ '<rect x="270" y="114" width="115" height="52" rx="12" fill="var(--accent-soft)"/><rect x="395" y="114" width="125" height="52" rx="12" fill="var(--good-soft)"/>'+
+ '<text x="282" y="136" style="font:600 10px var(--body)" fill="var(--muted)">Next visit</text><text x="282" y="156" style="font:700 13px var(--body)" fill="var(--ink)">in 11 days</text>'+
+ '<text x="407" y="136" style="font:600 10px var(--body)" fill="var(--muted)">Latest results</text><text x="407" y="156" style="font:700 13px var(--body)" fill="var(--ink)">Reviewed</text>'+
+ '<polyline points="272,236 308,222 344,230 380,206 416,214 452,192 500,198" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>'+
+ '<line x1="272" y1="252" x2="520" y2="252" stroke="var(--line)"/><g fill="var(--accent)"><circle cx="290" cy="272" r="7"/><circle cx="350" cy="272" r="7" opacity=".6"/><circle cx="410" cy="272" r="7" opacity=".35"/><circle cx="470" cy="272" r="7" opacity=".2"/></g>'+
+ '<path class="flow" d="M178 200 C 210 200, 215 190, 250 180" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>'+
+ '<g class="float"><g stroke="#a81a4d" stroke-width="5" stroke-linecap="round"><path d="M80 170v-18M110 170v-18M140 170v-18M80 250v18M110 250v18M140 250v18M54 190h-16M54 220h-16M170 190h16M170 220h16"/></g>'+
+ '<rect x="54" y="170" width="116" height="80" rx="16" fill="url(#cg)"/><rect x="72" y="186" width="80" height="48" rx="10" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>'+
+ '<g style="color:#fff" transform="translate(95 192)"><svg viewBox="0 0 64 64" width="34" height="34"><use href="#rib"/></svg></g></g>'+
+ '<g transform="translate(206 150)"><circle r="17" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/><g style="color:var(--accent-strong)" transform="translate(-9 -9)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+I.lock+'</svg></g></g>'+
+ '<text x="112" y="310" text-anchor="middle" style="font:600 11px var(--body)" fill="var(--muted)">Proposed concept</text></svg>'}
+function stageArt(n){
+ const tumor=[5,9,13,13][n-1];const nodes=[[],[[128,36]],[[128,36],[134,52],[120,24]],[[128,36],[134,52],[120,24]]][n-1];
+ let s='<svg viewBox="0 0 190 130" style="width:100%;height:auto" role="img" aria-label="Simplified illustration of breast cancer stage '+n+'"><circle cx="70" cy="68" r="46" fill="var(--accent-soft)" stroke="var(--muted)" stroke-width="2"/><circle cx="70" cy="68" r="3" fill="var(--muted)"/>';
+ if(n===3)s+='<path d="M24 52 Q18 68 24 84" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="4 4"/>';
+ s+='<circle cx="'+(n===3?44:58)+'" cy="58" r="'+tumor+'" fill="var(--accent)"/>';
+ nodes.forEach(p=>{s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="var(--warn)"/>'});
+ if(nodes.length)s+='<text x="114" y="14" style="font:600 9px var(--body)" fill="var(--muted)">lymph nodes</text>';
+ if(n===4)s+='<rect x="140" y="70" width="44" height="50" rx="12" fill="var(--surface2)" stroke="var(--muted)" stroke-dasharray="3 3"/><circle cx="152" cy="86" r="4" fill="var(--accent)"/><circle cx="168" cy="100" r="5" fill="var(--accent)"/><circle cx="156" cy="108" r="3" fill="var(--accent)"/>';
+ return s+'</svg>'}
+function vHome(){
+ const u=me(),dash=u?(u.role==='doctor'?'#doctor':'#patient'):'#register';
+ const why=[['calendar','Remember your checkups','Add appointments and get reminders before each one.'],['book','Learn about breast cancer','Clear, kind explanations of risks, signs and early detection.'],['file','Keep information organized','Reports, results and notes live in one private place.'],['activity','Follow treatment progress','See your care pathway and updates from your doctor.'],['users','Stay connected with your team','Share what you choose with the doctors you authorize.']];
+ const feats=[['reminders','calendar','Screening reminders','Add appointments, choose email or website alerts, reschedule in a tap.'],['chip','chip','Smart Medical Chip','A proposed future way to open verified records securely, always with consent.'],['journey','activity','My Cancer Journey','A six-step timeline that moves only when your doctor updates your record.'],['recovery','heart','Recovery monitoring','Follow-up dates, results and alerts that tell you when to call your provider.']];
+ return '<section class="hero"><div><span class="eyebrow">Breast health platform</span><h1>Welcome to Think Pink</h1><p class="lead">Your health matters. Think Pink helps you stay informed, remember your medical checkups, and follow your health journey with confidence.</p><p class="slogan">“Early Detection, Better Protection!”</p><div class="btns"><a class="btn btn-primary" href="'+dash+'">Get Started</a><a class="btn btn-soft" href="#awareness">Learn About Breast Cancer</a><a class="btn btn-ghost" href="'+(u?'#patient':'#login')+'">Patient Login</a></div><p class="small muted">Together, We Can Make a Difference.</p></div><div>'+chipArt()+'</div></section>'+
+ '<section class="blk"><div class="sec-h"><div><span class="eyebrow">Why Think Pink?</span><h2>One calm place for your breast health</h2></div></div><div class="grid g3">'+why.map(w=>'<div class="card"><div class="ico">'+ic(w[0])+'</div><h3>'+w[1]+'</h3><p class="muted">'+w[2]+'</p></div>').join('')+'</div></section>'+
+ '<section class="blk"><div class="sec-h"><div><span class="eyebrow">Two accounts, one design</span><h2>Built for prevention and for treatment</h2></div></div><div class="grid g2"><div class="card soft"><h3>'+ic('shield')+' Prevention Account</h3><p class="muted">For anyone without a breast cancer diagnosis. Monthly check-ins, awareness tips, a visual health pattern, and reminders for screening.</p><a class="btn btn-soft btn-sm" href="#register">Start prevention account</a></div><div class="card" style="background:linear-gradient(120deg,#7d1440,#c8245f);color:#fff;border:0"><h3>'+ic('heart')+' Cancer Patient Account</h3><p style="opacity:.92">For people in treatment or recovery. Diagnosis and stage confirmed by your doctor, timeline, reports, Smart Chip profile and recovery monitoring.</p><a class="btn btn-sm" style="background:#fff;color:#7d1440" href="#register">Start patient account</a></div></div></section>'+
+ '<section class="blk"><div class="sec-h"><div><span class="eyebrow">What you can do</span><h2>Four tools that work together</h2></div></div><div class="grid g4">'+feats.map(f=>'<a class="card" style="text-decoration:none;color:inherit" href="#'+f[0]+'"><div class="ico">'+ic(f[1])+'</div><h3>'+f[2]+'</h3><p class="muted small">'+f[3]+'</p></a>').join('')+'</div></section>'+
+ '<section class="blk"><div class="card soft"><div class="sec-h"><h2>Think Pink at a glance</h2><span class="tag">Demonstration data, not real medical statistics</span></div><div class="grid g4"><div class="stat"><b>12,480</b>demo reminders sent</div><div class="stat"><b>3,200</b>demo members</div><div class="stat"><b>86</b>demo partner clinics</div><div class="stat"><b>94%</b>demo on-time visits</div></div></div></section>'+
+ '<section class="blk"><div class="card"><h3>'+ic('phone')+' Use Think Pink on your phone</h3><p class="muted">Open this page in your phone’s browser, then use the browser menu and choose <b>Add to Home Screen</b>. It opens like an app and the layout adapts to your screen.</p></div></section>'}
+function vAbout(){return '<section class="narrow"><span class="eyebrow">About Us</span><h1>Early detection starts with remembering to look</h1><p class="lead">Think Pink is a patient-first platform that brings awareness, reminders and verified follow-up information into one place.</p></section>'+
+ '<section class="blk"><div class="grid g3"><div class="card"><div class="ico">'+ic('heart')+'</div><h3>Our mission</h3><p class="muted">Help women notice changes early, keep appointments, and feel supported at every stage, from prevention through recovery.</p></div><div class="card"><div class="ico">'+ic('shield')+'</div><h3>Privacy first</h3><p class="muted">Patients decide which doctors can see their record. Doctors only see patients who authorized them. Every access is logged.</p></div><div class="card"><div class="ico">'+ic('steth')+'</div><h3>Doctor-verified</h3><p class="muted">Diagnosis, cancer stage and results are entered by authorized doctors. The platform never diagnoses and never calculates recovery.</p></div></div></section>'+
+ '<section class="blk"><h2>Who Think Pink serves</h2><div class="grid g3"><div class="card soft"><h3>Patients</h3><p class="muted">Reminders, monthly records, a clear timeline and plain-language results.</p></div><div class="card soft"><h3>Doctors</h3><p class="muted">One dashboard for authorized patients, updates, reports and next appointments.</p></div><div class="card soft"><h3>Healthcare centers</h3><p class="muted">A consistent way to share follow-up information with patient consent.</p></div></div></section>'+
+ '<section class="blk"><div class="note warn">'+ic('alert')+'<p><b>This is a demonstration.</b> All accounts and records are fictional and stored only in your own browser. Do not enter real medical information.</p></div></section>'}
+const KNOW=[['What Is Breast Cancer?','Breast cancer starts when some cells in the breast grow in an uncontrolled way. These cells can form a lump or spread to nearby tissue. Many breast cancers are found early, and finding one early often gives more treatment options.'],['Risk Factors','Having a risk factor does not mean you will develop breast cancer, and many people with breast cancer have none.']];
+const RISKS=['Age (risk rises as we get older)','Family history of breast or ovarian cancer','Inherited genetic factors','Previous radiation to the chest','Certain hormone-related factors','Lifestyle factors such as alcohol and physical inactivity'];
+const SIGNS=['A new lump in the breast or underarm','Changes in breast size or shape','Changes in the skin, such as dimpling or redness','Unusual nipple discharge','Any breast change that persists'];
+const MYTHS=[['Only women with a family history get breast cancer.','Most people diagnosed have no close family history.'],['Every breast lump is cancer.','Most lumps are not cancer, but every new lump should be checked.'],['Only older women are affected.','Risk rises with age, but it can happen at younger ages too.'],['Men cannot get breast cancer.','It is rare, but men can develop breast cancer.'],['If I feel fine, I do not need screening.','Early breast cancer often causes no symptoms. That is why screening exists.'],['A breast cancer diagnosis means there is no hope.','Many people live well after treatment, and earlier detection improves options.'],['Breast self-awareness replaces screening.','Knowing what is normal helps, but it does not replace the screening your doctor recommends.'],['Only the lump matters.','Skin, nipple and shape changes matter too.']];
+const STG=[['Stage 1','Cancer is small and limited.'],['Stage 2','Cancer has grown or may have spread to nearby lymph nodes.'],['Stage 3','Cancer is more advanced and may involve nearby tissues or lymph nodes.'],['Stage 4','Cancer has spread to other parts of the body.']];
+function vAwareness(){
+ const tabs=[['know','Know Your Health'],['risk','Risk Factors'],['signs','Warning Signs'],['prev','Early Detection'],['myths','Myths & Facts'],['stages','Cancer Stages']];
+ let b='';
+ if(UI.awTab==='know')b='<div class="grid g2"><div class="card"><h3>'+ic('info')+' What is breast cancer?</h3><p>'+KNOW[0][1]+'</p></div><div class="card soft"><h3>'+ic('heart')+' Why this matters</h3><p class="muted">Knowing the basics makes it easier to notice changes and talk with your doctor without fear.</p><a class="btn btn-primary btn-sm" href="#quiz">Test Your Knowledge</a></div></div>';
+ if(UI.awTab==='risk')b='<div class="card"><h3>'+ic('activity')+' Risk factors</h3><p class="muted">'+KNOW[1][1]+'</p><div class="grid g2">'+RISKS.map(r=>'<div class="opt" style="cursor:default">'+ic('check')+r+'</div>').join('')+'</div></div>';
+ if(UI.awTab==='signs')b='<div class="card"><h3>'+ic('alert')+' Common warning signs</h3><div class="grid g2">'+SIGNS.map(r=>'<div class="opt" style="cursor:default">'+ic('check')+r+'</div>').join('')+'</div><div class="note warn">'+ic('alert')+'<p>If you notice any of these, contact a healthcare professional. Most causes are not cancer, and checking is always the right step.</p></div></div>';
+ if(UI.awTab==='prev')b='<div class="grid g3"><div class="card"><div class="ico">'+ic('heart')+'</div><h3>Know what is normal for you</h3><p class="muted">Pay attention to how your breasts usually look and feel so changes stand out.</p></div><div class="card"><div class="ico">'+ic('steth')+'</div><h3>Talk to a professional</h3><p class="muted">Discuss concerns early. Do not wait for symptoms to become severe.</p></div><div class="card"><div class="ico">'+ic('calendar')+'</div><h3>Follow screening advice</h3><p class="muted">Recommended timing depends on your age, history and country. Ask your doctor, then set reminders.</p><a class="btn btn-soft btn-sm" href="#reminders">Set a reminder</a></div></div>';
+ if(UI.awTab==='myths')b='<p class="muted">Tap a card to reveal the fact.</p><div class="grid g4">'+MYTHS.map(m=>'<button class="flip" data-act="flip"><span class="myth"><span class="mf" style="color:var(--bad)">Myth</span><br><b>'+m[0]+'</b></span><span class="fact"><span class="mf" style="color:var(--good)">Fact</span><br><b>'+m[1]+'</b></span></button>').join('')+'</div>';
+ if(UI.awTab==='stages')b='<h3>Understanding Cancer Stages</h3><div class="grid g4">'+STG.map((s,i)=>'<div class="card">'+stageArt(i+1)+'<h4>'+s[0]+'</h4><p class="muted small">'+s[1]+'</p></div>').join('')+'</div><div class="note">'+ic('info')+'<p>Only healthcare professionals can determine the actual cancer stage through medical examinations and tests. These drawings are simplified and not to scale.</p></div>';
+ return '<span class="eyebrow">Breast Cancer Awareness</span><h1>Know Your Health</h1><p class="lead">Simple, reliable information to help you notice changes early and ask better questions.</p><div class="tabs" role="tablist">'+tabs.map(t=>'<button role="tab" class="'+(UI.awTab===t[0]?'on':'')+'" data-act="tab" data-k="awTab" data-v="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>'+b+'<div class="card soft" style="margin-top:26px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap"><div><h3 style="margin:0">Ready to test what you learned?</h3><p class="muted" style="margin:0">12 quick questions with instant explanations.</p></div><a class="btn btn-primary" href="#quiz">Test Your Knowledge</a></div>'}
+const QUIZ=[
+['Which is a common warning sign of breast cancer?',['A new lump in the breast or underarm','Mild sneezing','Short-term muscle soreness after exercise','Dry lips'],0,'A new lump in the breast or underarm is a common warning sign and should be checked.'],
+['A new breast lump is found. What is the best next step?',['Wait a year','Contact a healthcare professional','Ignore it if it does not hurt','Search online and decide'],1,'Most lumps are not cancer, but a professional should examine any new lump.'],
+['Which risk factor can you NOT change?',['Alcohol intake','Physical activity','Age','Body weight'],2,'Age cannot be changed. Lifestyle factors can be improved.'],
+['What does early detection mean?',['Finding cancer at an earlier stage','Preventing all cancers','Avoiding checkups','Treating without tests'],0,'Early detection means finding it sooner, when treatment options are often broader.'],
+['Who can determine a cancer stage?',['A friend','A healthcare professional using exams and tests','An app','A website quiz'],1,'Only healthcare professionals can stage cancer.'],
+['Can men get breast cancer?',['No, never','Yes, though it is rare','Only after 80','Only with a family history'],1,'Men have breast tissue too and can, rarely, develop breast cancer.'],
+['If a relative had breast cancer, what should you do?',['Assume you will get it','Tell your doctor about your family history','Stop all screening','Nothing, it is irrelevant'],1,'Family history is important to share so your doctor can advise on screening.'],
+['A breast change lasts several weeks. You should:',['See a healthcare professional','Wait until it hurts','Hope it goes away','Skip checkups'],0,'Persistent changes deserve a professional evaluation.'],
+['Which habit is linked with lower breast cancer risk?',['Regular physical activity','Skipping meals','Heavy alcohol use','Avoiding doctors'],0,'Being active and limiting alcohol are linked with better breast health.'],
+['How often should you have breast screening?',['Never','Whenever you feel like it','As advised by your healthcare provider for your age and risk','Only once in life'],2,'Timing depends on age, history and local guidance, so follow your provider’s advice.'],
+['After treatment ends, follow-up appointments are:',['Not needed','Still important','Only for emergencies','Only for family'],1,'Follow-up visits let your care team monitor your recovery.'],
+['Your results say they need further review. What now?',['Assume the worst','Ignore it','Contact your healthcare provider','Delete the report'],2,'Results needing review are a reason to talk with your provider, not to guess.']];
+function vQuiz(){
+ const q=UI.quiz;
+ if(q.done){const p=q.score/QUIZ.length;const m=p>=.8?'Wonderful! You know your stuff. Share it with someone you care about.':p>=.5?'Great effort! Every bit of knowledge helps you protect your health.':'Good start! Learning is a step forward. Explore the Awareness pages and try again.';
+  return '<section class="card narrow tc"><div class="gate-ic">'+rib(30)+'</div><h2>You scored '+q.score+' out of '+QUIZ.length+'</h2><p class="lead" style="margin-inline:auto">'+m+'</p>'+(S.quizBest!=null?'<p class="small muted">Best score on this device: '+S.quizBest+'</p>':'')+'<div class="btns" style="justify-content:center"><button class="btn btn-primary" data-act="qrestart">Try again</button><a class="btn btn-soft" href="#awareness">Review awareness</a></div></section>'}
+ const Q=QUIZ[q.i];
+ return '<section class="narrow"><span class="eyebrow">Test Your Knowledge</span><div class="qbar" role="progressbar" aria-valuemin="0" aria-valuemax="'+QUIZ.length+'" aria-valuenow="'+q.i+'"><i style="width:'+(q.i/QUIZ.length*100)+'%"></i></div><p class="small muted" style="margin-top:8px">Question '+(q.i+1)+' of '+QUIZ.length+' · Score '+q.score+'</p><div class="card"><h2 style="font-size:1.35rem">'+Q[0]+'</h2>'+Q[1].map((o,i)=>'<button class="qopt'+(q.sel!=null?(i===Q[2]?' ok':i===q.sel?' no':''):'')+'" data-act="qpick" data-i="'+i+'"'+(q.sel!=null?' disabled':'')+'>'+esc(o)+'</button>').join('')+
+ (q.sel!=null?'<div class="note '+(q.sel===Q[2]?'good':'bad')+'" role="status">'+ic(q.sel===Q[2]?'check':'info')+'<p><b>'+(q.sel===Q[2]?'Correct!':'Not quite.')+'</b> '+Q[3]+'</p></div><button class="btn btn-primary" data-act="qnext">'+(q.i+1<QUIZ.length?'Next question':'See my score')+'</button>':'')+'</div></section>'}
+const AFF=['You are stronger than you think.','Every step forward matters.','Your journey matters, and you deserve support.','Asking for help is a sign of strength.','Rest is part of healing.','You are not alone, and you never have to be.'];
+const ASK=[['Diagnosis','What type and stage is my cancer, and what does that mean for me?','Which tests were used to decide this?'],['Treatment','What are my treatment options and what do you recommend?','What is the goal of each treatment?','How long will treatment take?'],['Side effects','Which side effects should I expect and which need a same-day call?','Who do I contact out of hours?'],['Follow-up','How often will I be checked after treatment?','Which symptoms should make me call sooner?','Who can support me emotionally?']];
+function vSupport(){
+ return '<section class="hero" style="grid-template-columns:1fr"><div><span class="eyebrow">You Are Not Alone</span><h1>'+esc(AFF[UI.affirm%AFF.length])+'</h1><p class="lead">Kind words, practical questions and resources for patients, families and caregivers.</p><button class="btn btn-primary" data-act="affirm">Show another message</button></div></section>'+
+ '<section class="blk"><h2>Messages for the days that feel heavy</h2><div class="grid g3">'+AFF.slice(0,3).map(a=>'<div class="card soft tc"><div style="color:var(--accent-strong)">'+ic('heart')+'</div><h3>'+a+'</h3></div>').join('')+'</div></section>'+
+ '<section class="blk"><div class="sec-h"><h2>Questions to ask your doctor</h2><button class="btn btn-soft btn-sm" data-act="copyq">'+ic('copy')+' Copy list</button></div><div class="grid g2">'+ASK.map(g=>'<div class="card"><h3>'+g[0]+'</h3><ul class="muted" style="margin:0;padding-left:18px">'+g.slice(1).map(x=>'<li>'+x+'</li>').join('')+'</ul></div>').join('')+'</div></section>'+
+ '<section class="blk"><div class="grid g2"><div class="card"><h3>'+ic('users')+' For family &amp; caregivers</h3><ul class="muted" style="padding-left:18px;margin:0"><li>Listen first. You do not need to fix everything.</li><li>Offer specific help: a ride, a meal, taking notes at appointments.</li><li>Ask how they want to share news and with whom.</li><li>Look after your own rest and support too.</li></ul></div><div class="card"><h3>'+ic('book')+' Trusted reading</h3><div class="li"><a href="https://www.who.int/news-room/fact-sheets/detail/breast-cancer" target="_blank" rel="noopener">World Health Organization: Breast cancer</a></div><div class="li"><a href="https://www.cancer.org/cancer/types/breast-cancer.html" target="_blank" rel="noopener">American Cancer Society: Breast cancer</a></div><div class="li"><a href="https://www.nhs.uk/conditions/breast-cancer-in-women/" target="_blank" rel="noopener">NHS: Breast cancer in women</a></div><div class="li"><a href="https://www.breastcancer.org" target="_blank" rel="noopener">Breastcancer.org</a></div></div></div></section>'}
+function vContact(){
+ if(UI.sent)return '<section class="gate card"><span class="gate-ic">'+ic('check')+'</span><h2>Message saved</h2><p>Thank you. Your message was saved in this demonstration. This demo cannot send real email, so no one outside this browser received it.</p><button class="btn btn-primary" data-act="again">Write another</button></section>';
+ const u=me();
+ return '<div class="grid g2" style="align-items:start"><div><span class="eyebrow">Contact Us</span><h1>We’d love to hear from you</h1><p class="lead">We are here to support you. Contact the Think Pink team for questions about the platform.</p><div class="note">'+ic('info')+'<p>In an emergency or if you are worried about symptoms, contact your healthcare provider or local emergency number. This form is not monitored for medical concerns.</p></div></div><form class="card form" data-form="contact" novalidate><div class="field"><label for="c-name">Full Name</label><input id="c-name" name="name" autocomplete="name" value="'+esc(u?u.name:'')+'"></div><div class="field"><label for="c-mail">Email Address</label><input id="c-mail" name="email" type="email" autocomplete="email" value="'+esc(u?u.email:'')+'"></div><div class="field"><label for="c-sub">Subject</label><input id="c-sub" name="subject"></div><div class="field"><label for="c-msg">Message</label><textarea id="c-msg" name="message"></textarea></div><p class="err" role="alert"></p><button class="btn btn-primary" type="submit">'+ic('send')+' Send Message</button></form></div>'}
+function vLogin(){return '<section class="narrow"><span class="eyebrow">Welcome back</span><h1>Log in</h1><form class="card form" data-form="login" novalidate><div class="field"><label for="l-mail">Email Address</label><input id="l-mail" name="email" type="email" autocomplete="username"></div><div class="field"><label for="l-pw">Password</label><input id="l-pw" name="pw" type="password" autocomplete="current-password"></div><p class="err" role="alert"></p><button class="btn btn-primary" type="submit">Log in</button><button type="button" class="btn btn-ghost btn-sm" data-act="forgot">Forgot password?</button></form><div class="note">'+ic('lock')+'<p>This is a demo. Accounts are stored only in your browser and passwords are not securely protected. Never use a real password.</p></div><div class="card soft"><h4>Try a demo account</h4><p class="small muted">All demo passwords are <b>Demo#1234</b>.</p><div class="btns">'+demoBtns('patient')+demoBtns('doctor')+'</div></div><p class="tc">New here? <a href="#register">Create an account</a></p></section>'}
+function vRegister(){
+ const docs=S.users.filter(u=>u.role==='doctor');
+ return '<section class="narrow"><span class="eyebrow">Get Started</span><h1>Create your account</h1><form class="card form" data-form="register" novalidate><div class="opts" role="radiogroup" aria-label="Account type"><label class="opt"><input type="radio" name="role" value="patient" checked data-change="role"> Patient Account</label><label class="opt"><input type="radio" name="role" value="doctor" data-change="role"> Doctor Account</label></div>'+
+ '<div class="field"><label for="r-name">Full Name</label><input id="r-name" name="name" autocomplete="name"></div><div class="field"><label for="r-mail">Email Address</label><input id="r-mail" name="email" type="email" autocomplete="email"></div>'+
+ '<div class="row2"><div class="field"><label for="r-pw">Password</label><input id="r-pw" name="pw" type="password" autocomplete="new-password" data-input="pw"><div class="meter"><i id="pwm"></i></div></div><div class="field"><label for="r-pw2">Confirm Password</label><input id="r-pw2" name="pw2" type="password" autocomplete="new-password"></div></div>'+
+ '<div class="row2"><div class="field"><label for="r-dob">Date of Birth</label><input id="r-dob" name="dob" type="date" max="'+today()+'"></div><div class="field"><label for="r-ph">Phone Number</label><input id="r-ph" name="phone" type="tel" autocomplete="tel"></div></div>'+
+ '<div class="field"><label for="r-em">Emergency Contact (optional)</label><input id="r-em" name="emergency"></div>'+
+ '<div id="patOnly" class="form"><div><p class="lbl">Have you previously been diagnosed with breast cancer?</p><div class="opts"><label class="opt"><input type="radio" name="dx" value="no" checked> No, I have not been diagnosed with breast cancer</label><label class="opt"><input type="radio" name="dx" value="yes"> Yes, I have been diagnosed with breast cancer</label></div><p class="small muted">Your doctor must verify any diagnosis and stage before it appears as confirmed.</p></div><div class="field"><label for="r-doc">Authorize a doctor now (optional)</label><select id="r-doc" name="doc"><option value="">Not yet</option>'+docs.map(d=>'<option value="'+d.id+'">'+esc(d.name)+' · '+esc(d.specialty)+'</option>').join('')+'</select></div></div>'+
+ '<div id="docOnly" class="form" hidden><div class="field"><label for="r-spec">Specialty</label><input id="r-spec" name="specialty" placeholder="e.g. Breast Oncology"></div><div class="field"><label for="r-lic">Medical license number (demo, not checked)</label><input id="r-lic" name="license"></div></div>'+
+ '<label class="opt"><input type="checkbox" name="consent"> I have read the privacy notice and agree to the terms.</label><div class="note">'+ic('lock')+'<p><b>Privacy and security.</b> Patients only see their own information. Doctors only see patients who authorized them. This demo keeps data in your browser only. Do not enter real medical details.</p></div><p class="err" role="alert"></p><button class="btn btn-primary" type="submit">Create account</button></form><p class="tc">Already registered? <a href="#login">Log in</a></p></section>'}
+function vPrivacy(){
+ const u=me();
+ let b='<span class="eyebrow">Privacy &amp; security</span><h1>You control your information</h1><div class="grid g3"><div class="card"><div class="ico">'+ic('lock')+'</div><h3>Private profiles</h3><p class="muted">Patients see only their own records.</p></div><div class="card"><div class="ico">'+ic('shield')+'</div><h3>Doctor authorization</h3><p class="muted">Doctors see only patients who consent, and consent can be withdrawn.</p></div><div class="card"><div class="ico">'+ic('file')+'</div><h3>Protected reports</h3><p class="muted">Report access is logged and requires authorization.</p></div></div>';
+ if(!u)return b+gate('Log in to manage consent, notifications and the access log.','patient');
+ if(u.role==='patient'){
+  const docs=S.users.filter(d=>d.role==='doctor');
+  b+='<section class="blk"><div class="grid g2" style="align-items:start"><div class="card"><h3>Doctor authorization (consent)</h3><p class="muted small">Switch on to let a doctor view your medical information.</p>'+docs.map(d=>'<div class="li"><div class="grow"><h4>'+esc(d.name)+'</h4><span class="small muted">'+esc(d.specialty)+' · '+esc(d.clinic)+'</span></div><label class="sw"><input type="checkbox" data-act="auth" data-d="'+d.id+'" '+(u.authorized.includes(d.id)?'checked':'')+' aria-label="Authorize '+esc(d.name)+'"><i></i></label></div>').join('')+'</div>'+
+  '<form class="card form" data-form="prefs"><h3>Notification preferences</h3><div class="field"><label for="pf-m">Preferred method</label><select id="pf-m" name="method"><option value="both"'+(u.notifyMethod==='both'?' selected':'')+'>Email and website</option><option value="web"'+(u.notifyMethod==='web'?' selected':'')+'>Website only</option><option value="email"'+(u.notifyMethod==='email'?' selected':'')+'>Email only (demo outbox)</option></select></div><div class="field"><label for="pf-d">Remind me before appointments</label><select id="pf-d" name="days">'+[1,2,3,7].map(d=>'<option value="'+d+'"'+(u.remind===d?' selected':'')+'>'+d+' day'+(d>1?'s':'')+' before</option>').join('')+'</select></div><button class="btn btn-primary" type="submit">Save preferences</button></form></div></section>'+
+  '<section class="blk card"><h3>Access log</h3>'+(S.audit.filter(a=>a.userId===u.id).slice(-8).reverse().map(a=>'<div class="li"><div class="grow">'+esc(a.who)+' · '+esc(a.action)+'</div><span class="small muted">'+fmt(a.date)+'</span></div>').join('')||'<p class="muted">No one has accessed your record yet.</p>')+'</section>';
+ }else b+='<div class="note">'+ic('shield')+'<p>As a doctor, you can only open records of patients who have authorized you. Every record you open is written to the patient’s access log.</p></div>';
+ return b+'<section class="blk card soft"><h3>Demo data</h3><p class="muted small">Everything here is stored in your browser. Reset to restore the original fictional accounts.</p><button class="btn btn-danger btn-sm" data-act="reset">'+(UI.resetArm?'Click again to confirm reset':'Reset demo data')+'</button></section>'}
+function apptRow(a,acts){
+ const d=parse(a.date);const left=diffDays(a.date,today());
+ const when=a.status==='completed'?'Completed':left<0?'Past due':left===0?'Today':left===1?'Tomorrow':'In '+left+' days';
+ return '<div class="li"><div class="date-box"><b>'+d.getDate()+'</b><span>'+d.toLocaleDateString('en-GB',{month:'short'})+'</span></div><div class="grow"><h4>'+esc(a.type)+' <span class="pill '+(a.status==='completed'?'good':left<0?'bad':left<=3?'warn':'')+'">'+when+'</span>'+(a.moved?' <span class="pill info">Rescheduled</span>':'')+'</h4><div class="small muted">'+fmt(a.date)+' · '+esc(a.time)+(a.place?' · '+esc(a.place):'')+'</div>'+(a.notes?'<div class="small">'+esc(a.notes)+'</div>':'')+(a.result?'<div class="small"><b>Result note:</b> '+esc(a.result)+'</div>':'')+'<div class="by">Added by '+esc(a.by||'You')+(a.status==='upcoming'?' · Reminder '+(a.remind||3)+' day(s) before':'')+'</div></div>'+(acts?'<div class="btns" style="margin:0">'+(a.status==='upcoming'?'<button class="btn btn-soft btn-sm" data-act="acomplete" data-id="'+a.id+'">'+ic('check')+' Complete</button><button class="btn btn-ghost btn-sm" data-act="aresched" data-id="'+a.id+'">Reschedule</button>':'')+'<button class="btn btn-ghost btn-sm" data-act="aedit" data-id="'+a.id+'">'+ic('edit')+' Edit</button><button class="btn btn-ghost btn-sm" data-act="adel" data-id="'+a.id+'" aria-label="Delete appointment">'+ic('x')+'</button></div>':'')+'</div>'}
+const myAppts=u=>S.appts.filter(a=>a.userId===u.id);
+const nextAppt=u=>myAppts(u).filter(a=>a.status==='upcoming'&&diffDays(a.date,today())>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
+function vReminders(){
+ const g=needPatient('Log in to add appointments and receive screening reminders.');if(g)return g;
+ const u=me(),T=today(),all=myAppts(u);
+ const up=all.filter(a=>a.status==='upcoming'&&a.date>=T).sort((a,b)=>a.date.localeCompare(b.date));
+ const done=all.filter(a=>a.status==='completed').sort((a,b)=>b.date.localeCompare(a.date));
+ const due=all.filter(a=>a.status==='upcoming'&&a.date<T).sort((a,b)=>b.date.localeCompare(a.date));
+ const n=up[0];const list=UI.remTab==='upcoming'?up:UI.remTab==='done'?done:due;
+ const via=u.notifyMethod==='both'?'email and website':u.notifyMethod==='web'?'website':'email (demo outbox)';
+ return '<div class="sec-h"><div><span class="eyebrow">Screening Reminders</span><h1 style="margin:0">My Screening Reminders</h1></div><button class="btn btn-primary" data-act="aadd">'+ic('plus')+' Add appointment</button></div>'+
+ (n?'<div class="note '+(diffDays(n.date,T)<=u.remind?'warn':'good')+'">'+ic('bell')+'<p><b>'+REM[(n.date.length+diffDays(n.date,T))%3]+'</b><br>'+esc(n.type)+' on '+fmt(n.date)+' at '+esc(n.time)+'.</p></div>':'<div class="note">'+ic('calendar')+'<p>You have no upcoming appointments. Add your next checkup so we can remind you.</p></div>')+
+ '<div class="grid g2" style="align-items:start"><div><div class="tabs">'+[['upcoming','Upcoming ('+up.length+')'],['done','Completed ('+done.length+')'],['due','Past due ('+due.length+')']].map(t=>'<button class="'+(UI.remTab===t[0]?'on':'')+'" data-act="tab" data-k="remTab" data-v="'+t[0]+'">'+t[1]+'</button>').join('')+'</div><div class="card">'+(list.length?list.map(a=>apptRow(a,true)).join(''):'<p class="muted">Nothing here yet.</p>')+'</div></div>'+
+ '<div class="grid"><div class="card soft"><h3>'+ic('bell')+' Reminder settings</h3><p class="muted small">Reminders are sent by <b>'+via+'</b>, '+u.remind+' day(s) before by default. Change this under <a href="#privacy">Privacy settings</a>. Email delivery is a demonstration, so no real emails are sent.</p></div><div class="card"><h3>'+ic('heart')+' When to screen</h3><p class="muted small">Recommended screening timing depends on your age, family history and local guidance. Ask your healthcare provider what is right for you, then add it here.</p></div></div></div>'}
+function apptForm(a,mode){
+ const d=a||{};
+ return '<form class="form" data-form="appt"><input type="hidden" name="id" value="'+esc(d.id||'')+'"><input type="hidden" name="mode" value="'+mode+'">'+
+ (mode==='resched'?'<p class="muted">Pick a new date for <b>'+esc(d.type)+'</b>.</p>':'<div class="field"><label for="a-t">Type of checkup</label><select id="a-t" name="type">'+ATYPES.map(t=>'<option'+(d.type===t?' selected':'')+'>'+t+'</option>').join('')+'</select></div>')+
+ '<div class="row2"><div class="field"><label for="a-d">Date</label><input id="a-d" name="date" type="date" value="'+esc(d.date||addDays(today(),7))+'"></div><div class="field"><label for="a-ti">Time</label><input id="a-ti" name="time" type="time" value="'+esc(d.time||'09:00')+'"></div></div>'+
+ (mode==='resched'?'':'<div class="field"><label for="a-p">Clinic or location</label><input id="a-p" name="place" value="'+esc(d.place||'')+'"></div><div class="field"><label for="a-n">Notes</label><textarea id="a-n" name="notes">'+esc(d.notes||'')+'</textarea></div><div class="field"><label for="a-r">Remind me</label><select id="a-r" name="remind">'+[1,2,3,7].map(x=>'<option value="'+x+'"'+((d.remind||me().remind)===x?' selected':'')+'>'+x+' day'+(x>1?'s':'')+' before</option>').join('')+'</select></div>')+
+ '<p class="err" role="alert"></p><button class="btn btn-primary" type="submit">'+(mode==='resched'?'Reschedule':'Save appointment')+'</button></form>'}
+function vNotifications(){
+ const u=me();if(!u)return gate('Log in to see your reminders, doctor updates and reports.','patient');
+ const all=S.notifs.filter(n=>n.userId===u.id);const web=all.filter(n=>n.via.includes('web'));
+ const f=UI.notifTab;const list=f==='unread'?web.filter(n=>!n.read):f==='email'?all.filter(n=>n.via.includes('email')):web;
+ const K={appointment:'calendar',screening:'bell',doctor:'steth',report:'file',followup:'activity',account:'user'};
+ return '<div class="sec-h"><div><span class="eyebrow">Notifications</span><h1 style="margin:0">Notification Center</h1></div><button class="btn btn-soft" data-act="markall">'+ic('check')+' Mark all as read</button></div><div class="tabs">'+[['all','All'],['unread','Unread ('+web.filter(n=>!n.read).length+')'],['email','Email outbox (demo)']].map(t=>'<button class="'+(f===t[0]?'on':'')+'" data-act="tab" data-k="notifTab" data-v="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>'+
+ (list.length?list.map(n=>'<div class="card'+(!n.read&&n.via.includes('web')?' unread':'')+'" style="margin-bottom:10px"><div class="li" style="border:0;padding:0"><div class="ico" style="margin:0">'+ic(K[n.kind]||'bell')+'</div><div class="grow"><h4>'+esc(n.title)+(n.via.includes('email')?' <span class="pill info">Email (demo)</span>':'')+'</h4><p class="muted" style="margin:0">'+esc(n.body)+'</p><span class="by">'+fmt(n.date)+'</span></div>'+(!n.read?'<button class="btn btn-ghost btn-sm" data-act="markread" data-id="'+n.id+'">Mark as read</button>':'<span class="pill good">Read</span>')+'</div></div>').join(''):'<div class="card tc"><p class="muted">No notifications here.</p></div>')}
+function vChip(){
+ const p=user('p2'),rec=S.rec.p2,c=UI.chip;
+ const tabs=[['history','Medical history'],['dx','Diagnosis'],['tx','Treatment'],['tests','Test results'],['appts','Follow-ups'],['rec','Recovery']];
+ let data='';
+ if(c.tab==='history')data='<p>Patient: <b>'+esc(p.name)+'</b>, born '+fmt(p.dob)+'. Emergency contact on file.</p><p class="muted small">Past entries entered by authorized doctors.</p>';
+ if(c.tab==='dx')data='<p><b>'+rec.stage+'</b> confirmed by '+esc(rec.stageBy)+' on '+fmt(rec.stageDate)+'.</p>';
+ if(c.tab==='tx')data=rec.entries.filter(e=>e.kind==='treatment').map(e=>'<p><b>'+esc(e.title)+'</b> · '+esc(e.tstatus)+'<br><span class="small muted">'+esc(e.text)+'</span></p>').join('');
+ if(c.tab==='tests')data=rec.entries.filter(e=>e.kind==='test').map(e=>'<p><b>'+esc(e.title)+'</b>: '+esc(e.value)+' '+esc(e.unit)+' <span class="pill good">Reviewed</span><br><span class="by">'+esc(e.doctor)+' · '+fmt(e.date)+'</span></p>').join('');
+ if(c.tab==='appts')data=myAppts(p).filter(a=>a.status==='upcoming').map(a=>'<p><b>'+esc(a.type)+'</b> · '+fmt(a.date)+' '+esc(a.time)+'</p>').join('');
+ if(c.tab==='rec')data='<p><span class="pill info">'+STATUS.find(s=>s.k===rec.status).t+'</span></p><p class="muted small">Recovery updates are written by the care team after verified tests.</p>';
+ const steps=[['Patient consents','The patient switches on access for a named doctor.'],['Doctor verifies identity','The doctor signs in with their own credentials.'],['Secure tap','The chip carries an encrypted key, not medical data.'],['Verified record opens','The key unlocks the profile held on secure servers.'],['Access is logged','Every tap is recorded and visible to the patient.']];
+ return '<section class="hero"><div><span class="eyebrow">Future technology</span><h1>Think Pink Smart Chip</h1><p class="lead">A proposed way for patients and doctors to open updated, verified medical information securely, only with the patient’s consent.</p><span class="tag">Proposed future concept</span></div><div>'+chipArt()+'</div></section>'+
+ '<div class="note bad" style="margin-top:22px">'+ic('alert')+'<p><b>Important:</b> The chip is an idea, not an existing product. It would not detect cancer, diagnose it, give a stage, or show that cancer has returned. All information must come from verified medical tests entered by authorized doctors.</p></div>'+
+ '<section class="blk"><h2>How it could work</h2><div class="grid g2"><div class="chipbox">'+steps.map((s,i)=>'<div class="step"><b class="n">'+(i+1)+'</b><div><h4 style="margin:0">'+s[0]+'</h4><span class="muted small">'+s[1]+'</span></div></div>').join('')+'</div><div class="card soft"><h3>What a connected profile could hold</h3><div class="grid" style="grid-template-columns:1fr 1fr;gap:8px">'+['Medical history','Cancer diagnosis information','Treatment records','Medical test results','Follow-up appointments','Recovery updates'].map(x=>'<div class="opt" style="cursor:default;font-size:.84rem">'+ic('check')+x+'</div>').join('')+'</div></div></div></section>'+
+ '<section class="blk"><div class="sec-h"><h2>Try the demonstration</h2><span class="tag">Fictional patient: Layla Rahman</span></div><div class="card"><div class="li" style="border:0"><div class="grow"><h4>1. Patient consent</h4><span class="small muted">Layla allows Dr. Sara Al Mansoori to open her record with the chip.</span></div><label class="sw"><input type="checkbox" data-act="chipconsent" '+(c.consent?'checked':'')+' aria-label="Patient consent"><i></i></label></div><div class="li"><div class="grow"><h4>2. Secure tap</h4><span class="small muted">'+(c.consent?'Consent recorded. The doctor can now tap.':'Switch on consent first. Without it, the tap is refused.')+'</span></div><button class="btn btn-primary btn-sm" data-act="chiptap">Simulate secure tap</button></div>'+
+ (c.tapped?'<div class="tabs" style="margin-top:14px">'+tabs.map(t=>'<button class="'+(c.tab===t[0]?'on':'')+'" data-act="tab" data-k="chipTab" data-v="'+t[0]+'">'+t[1]+'</button>').join('')+'</div><div class="note good">'+ic('shield')+'<div>'+data+'</div></div>':'')+
+ (c.log.length?'<h4 style="margin-top:14px">Access log</h4>'+c.log.map(l=>'<div class="small muted">'+esc(l)+'</div>').join(''):'')+'</div></section>'+
+ '<section class="blk"><div class="grid g3"><div class="card"><h3>Safeguards</h3><p class="muted small">Encryption, patient consent, withdrawable access, and a full audit trail.</p></div><div class="card"><h3>Verified data only</h3><p class="muted small">Only authorized doctors can add or change medical information.</p></div><div class="card"><h3>What it will never do</h3><p class="muted small">Diagnose, stage or detect cancer, or decide that a patient is cancer-free.</p></div></div></section>'}
+function lineChart(pts,ref){
+ const W=560,H=210,L=44,R=16,Tp=16,B=34;const ys=pts.map(p=>p.y).concat(ref||[]);const mn=Math.floor(Math.min.apply(0,ys)-.5),mx=Math.ceil(Math.max.apply(0,ys)+.5);
+ const X=i=>L+(pts.length===1?(W-L-R)/2:i*(W-L-R)/(pts.length-1)),Y=v=>Tp+(mx-v)*(H-Tp-B)/(mx-mn);
+ let s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Line chart of results over time">';
+ if(ref)s+='<rect class="band" x="'+L+'" y="'+Y(ref[1])+'" width="'+(W-L-R)+'" height="'+(Y(ref[0])-Y(ref[1]))+'"/>';
+ for(let v=mn;v<=mx;v++)s+='<line class="gr" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text x="'+(L-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>';
+ s+='<polyline class="ln" points="'+pts.map((p,i)=>X(i)+','+Y(p.y)).join(' ')+'"/>'+pts.map((p,i)=>'<circle cx="'+X(i)+'" cy="'+Y(p.y)+'" r="5"/><text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle">'+esc(p.x)+'</text>').join('');
+ return s+'</svg>'}
+function timeline(rec){
+ const pos=rec.cur;
+ const by=(i,k)=>rec.entries.filter(e=>e.stage===i&&k.includes(e.kind));
+ const ent=e=>'<div class="ent"><b>'+esc(e.title)+'</b>'+(e.kind==='test'?' · '+esc(e.value)+' '+esc(e.unit)+(e.flag==='review'?' <span class="pill bad">Needs further review</span>':' <span class="pill good">Reviewed</span>'):'')+(e.kind==='treatment'?' <span class="pill">'+esc(e.tstatus)+'</span>':'')+'<br>'+esc(e.text)+'<div class="by">'+esc(e.doctor)+' · '+fmt(e.date)+'</div></div>';
+ return '<div class="prog" role="list">'+STAGES.map((s,i)=>'<div role="listitem" class="'+(i<pos?'done':i===pos?'active':'')+'"><i>'+(i<pos?'✓':i+1)+'</i>'+s+'</div>').join('')+'</div>'+
+ STAGES.map((s,i)=>{const all=rec.entries.filter(e=>e.stage===i);const first=all.map(e=>e.date).sort()[0];const sec=(t,k)=>{const l=by(i,k);return '<div><h5>'+t+'</h5>'+(l.length?l.map(ent).join(''):'<span class="muted small">None recorded yet.</span>')+'</div>'};
+  return '<details class="stage'+(i===pos?' active':'')+'"'+(i===pos?' open':'')+'><summary><span class="pill '+(i<pos?'good':i===pos?'':'info')+'">'+(i<pos?'Done':i===pos?'Current':'Upcoming')+'</span><span class="sp">'+s+'</span><span class="small muted">'+(first?fmt(first):'Not started')+'</span></summary><div class="stage-b"><div><h5>Date</h5>'+(first?fmt(first):'Your care team will add the date when this step begins.')+'</div>'+sec('Medical updates',['update','monthly'])+sec('Doctor’s notes',['note','followup'])+sec('Test results',['test'])+sec('Treatment information',['treatment'])+'</div></details>'}).join('')}
+function dxRequestForm(){const docs=S.users.filter(d=>d.role==='doctor');return '<form class="form" data-form="dxreq"><p class="muted">Tell us about your diagnosis. Your doctor must verify it before it is shown as confirmed.</p><div class="field"><label for="dx-d">Approximate diagnosis date</label><input id="dx-d" type="date" name="date" max="'+today()+'"></div><div class="field"><label for="dx-doc">Doctor who will verify</label><select id="dx-doc" name="doc">'+docs.map(d=>'<option value="'+d.id+'">'+esc(d.name)+'</option>').join('')+'</select></div><p class="small muted">Choosing a doctor also authorizes them to view your record.</p><p class="err" role="alert"></p><button class="btn btn-primary" type="submit">Request verification</button></form>'}
+function vJourney(){
+ const g=needPatient('Log in to follow your cancer journey.');if(g)return g;
+ const u=me(),rec=S.rec[u.id];
+ if(u.type!=='cancer'||!rec)return '<section class="gate card"><span class="gate-ic">'+ic('activity')+'</span><h2>My Cancer Journey is for confirmed diagnoses</h2><p>You have a Prevention Account, so your tools are monthly check-ins and screening reminders.'+(u.dxRequest&&u.dxRequest.status==='pending'?' Your diagnosis request is waiting for doctor verification.':' If your doctor has confirmed a diagnosis, request an account update.')+'</p><div class="btns" style="justify-content:center"><a class="btn btn-primary" href="#patient">Go to my dashboard</a>'+(u.dxRequest&&u.dxRequest.status==='pending'?'':'<button class="btn btn-soft" data-act="dxreq">I have been diagnosed</button>')+'</div></section>';
+ return '<div class="sec-h"><div><span class="eyebrow">My Cancer Journey</span><h1 style="margin:0">Your care pathway</h1></div><span class="pill info">Updated only by your doctor</span></div>'+(rec.verified?'':'<div class="note warn">'+ic('clock')+'<p>Your diagnosis and stage are waiting for doctor verification. Entries will appear once your doctor adds them.</p></div>')+'<p class="muted">This timeline moves only when an authorized doctor updates your record. It does not calculate stages or recovery.</p>'+timeline(rec)}
+function recoveryBody(u){
+ const rec=S.rec[u.id];const al=rec.entries.filter(e=>e.kind==='test'&&e.flag==='review'&&!e.resolved);
+ const tests=rec.entries.filter(e=>e.kind==='test').sort((a,b)=>b.date.localeCompare(a.date));
+ const fu=myAppts(u).filter(a=>a.status==='upcoming'&&a.date>=today()).sort((a,b)=>a.date.localeCompare(b.date));
+ const doc=myDoc(u);
+ return '<div class="grid g3">'+STATUS.map(s=>'<div class="card'+(rec.status===s.k?'':' soft')+'" style="'+(rec.status===s.k?'border:2px solid var(--accent)':'')+'"><span class="pill '+(rec.status===s.k?'':'info')+'">'+(rec.status===s.k?'Current status':'Status')+'</span><h3 style="margin-top:10px">'+s.t+'</h3><p class="muted small">'+s.d+'</p></div>').join('')+'</div><p class="small muted">Your status label is set by your care team.</p>'+
+ '<h3 style="margin-top:22px">'+ic('bell')+' Follow-Up Alerts</h3>'+(al.length?al.map(e=>'<div class="note bad">'+ic('alert')+'<p><b>'+REVIEW_MSG+'</b><br><span class="small">'+esc(e.title)+' · '+fmt(e.date)+(doc?' · '+esc(doc.name):'')+'</span></p></div>').join(''):'<div class="note good">'+ic('check')+'<p>No follow-up alerts right now. Your care team will notify you if a result needs further review.</p></div>')+
+ '<div class="grid g2" style="margin-top:12px;align-items:start"><div class="card"><h3>Follow-up appointments</h3>'+(fu.length?fu.map(a=>'<div class="li"><div class="grow"><h4>'+esc(a.type)+'</h4><span class="small muted">'+fmt(a.date)+' · '+esc(a.time)+'</span></div></div>').join(''):'<p class="muted">None scheduled. Your doctor will schedule the next one.</p>')+'<a class="btn btn-soft btn-sm" href="#reminders">Manage reminders</a></div>'+
+ '<div class="card"><h3>Upcoming follow-up tests</h3>'+(fu.filter(a=>/MRI|Mammogram|ultrasound|Blood/i.test(a.type)).map(a=>'<div class="li"><div class="grow"><h4>'+esc(a.type)+'</h4><span class="small muted">'+fmt(a.date)+'</span></div></div>').join('')||'<p class="muted">No tests scheduled yet.</p>')+'</div></div>'+
+ '<div class="card" style="margin-top:16px"><h3>Medical test results</h3><div class="scroll"><table class="tbl"><thead><tr><th>Date</th><th>Test</th><th>Result</th><th>Reference</th><th>Status</th></tr></thead><tbody>'+(tests.map(e=>'<tr><td>'+fmt(e.date)+'</td><td>'+esc(e.title)+'</td><td>'+esc(e.value)+' '+esc(e.unit)+'</td><td>'+esc(e.ref||'—')+'</td><td>'+(e.flag==='review'&&!e.resolved?'<span class="pill bad">Needs further review</span>':'<span class="pill good">Reviewed</span>')+'</td></tr>').join('')||'<tr><td colspan="5" class="muted">No test results yet.</td></tr>')+'</tbody></table></div></div>'+
+ '<div class="grid g2" style="margin-top:16px;align-items:start"><div class="card"><h3>Doctor’s recovery notes</h3>'+(rec.entries.filter(e=>e.kind==='note'||e.kind==='followup').slice(-4).reverse().map(e=>'<div class="ent"><b>'+esc(e.title)+'</b><br>'+esc(e.text)+'<div class="by">'+esc(e.doctor)+' · '+fmt(e.date)+'</div></div>').join('')||'<p class="muted">No notes yet.</p>')+'</div><div class="card"><h3>Previous treatment</h3>'+(rec.entries.filter(e=>e.kind==='treatment').map(e=>'<div class="ent"><b>'+esc(e.title)+'</b> <span class="pill">'+esc(e.tstatus)+'</span><br>'+esc(e.text)+'<div class="by">'+fmt(e.date)+'</div></div>').join('')||'<p class="muted">No treatment recorded yet.</p>')+'</div></div>'+
+ '<div class="card" style="margin-top:16px"><h3>New medical updates</h3>'+(rec.entries.filter(e=>e.kind==='update').slice(-3).reverse().map(e=>'<div class="ent"><b>'+esc(e.title)+'</b><br>'+esc(e.text)+'<div class="by">'+esc(e.doctor)+' · '+fmt(e.date)+'</div></div>').join('')||'<p class="muted">No updates yet.</p>')+'</div>'+
+ '<div class="note">'+ic('info')+'<p>Think Pink never decides whether cancer has returned or whether you are cancer-free. Only your doctor can assess results.'+(doc?' Questions? Contact '+esc(doc.name)+' at '+esc(doc.clinic)+', '+esc(doc.phone)+'.':'')+'</p></div>'}
+function vRecovery(){
+ const g=needPatient('Log in to see your recovery tracker.');if(g)return g;
+ const u=me();if(u.type!=='cancer'||!S.rec[u.id])return '<section class="gate card"><span class="gate-ic">'+ic('heart')+'</span><h2>Recovery Tracker is for cancer patient accounts</h2><p>It becomes available once your doctor verifies a diagnosis. Meanwhile your monthly check-ins keep your breast health organized.</p><a class="btn btn-primary" href="#patient">Go to my dashboard</a></section>';
+ return '<div class="sec-h"><div><span class="eyebrow">Recovery Journey</span><h1 style="margin:0">Recovery &amp; follow-up</h1></div></div>'+recoveryBody(u)}
+const STLAB={clear:'No changes reported',new:'New change reported',ongoing:'Reported again',empty:'No entry submitted',none:'Before joining',open:'Not submitted yet'};
+const apptsIn=(u,k)=>myAppts(u).filter(a=>a.status==='completed'&&a.date.slice(0,7)===k).length;
+function reportText(r,u){
+ return 'MY MONTHLY HEALTH RECORD · '+mlabel(r.month)+'\nName: '+u.name+'\nNew symptoms reported: '+(r.sym==='yes'?'Yes':'No')+'\nChanges noticed: '+((r.changes||[]).join('; ')||'None reported')+'\nDetails: '+(r.note||'—')+'\nMedical appointments completed: '+apptsIn(u,r.month)+'\nCheckup results: '+(r.results||'None entered')+'\nConcerns to discuss with my doctor: '+(r.concerns||'None')+'\n\nSelf-reported by the user. This record is not a diagnosis.'}
+function checkinForm(u){
+ const r=monthEntries(u.id,curMonth())||{sym:'no',changes:[],note:'',results:'',concerns:''};
+ return '<form class="card form" data-form="checkin"><h3>'+ic('edit')+' '+mlabel(curMonth())+' check-in</h3><div><p class="lbl">Have you noticed any new symptoms?</p><div class="opts"><label class="opt"><input type="radio" name="sym" value="no"'+(r.sym!=='yes'?' checked':'')+'> No new symptoms</label><label class="opt"><input type="radio" name="sym" value="yes"'+(r.sym==='yes'?' checked':'')+'> Yes, something is new</label></div></div><div><p class="lbl">Changes you noticed in your breast health</p><div class="opts">'+CHANGES.map((c,i)=>'<label class="opt"><input type="checkbox" name="ch" value="'+i+'"'+((r.changes||[]).includes(c)?' checked':'')+'> '+c+'</label>').join('')+'</div></div><div class="field"><label for="ci-n">Describe what you noticed</label><textarea id="ci-n" name="note">'+esc(r.note)+'</textarea></div><div class="field"><label for="ci-r">Checkup results, if available</label><textarea id="ci-r" name="results">'+esc(r.results)+'</textarea></div><div class="field"><label for="ci-c">Concerns to discuss with a doctor</label><textarea id="ci-c" name="concerns">'+esc(r.concerns)+'</textarea></div><p class="small muted">Appointments completed this month: '+apptsIn(u,curMonth())+' (counted automatically).</p><div class="btns" style="margin:0"><button class="btn btn-primary" type="submit">Save check-in</button><button type="button" class="btn btn-soft" data-act="closemonth">Create this month’s report now</button></div></form>'}
+function prevDash(u){
+ const tab=['overview','checkin','reports','early'].includes(UI.dashTab)?UI.dashTab:'overview';
+ const sr=series(u.id,6),n=nextAppt(u),doc=myDoc(u);
+ const recs=S.monthly.filter(m=>m.userId===u.id).sort((a,b)=>b.month.localeCompare(a.month));
+ const pat=sr.filter(x=>x.flag);const ongoing=sr.filter(x=>x.state==='ongoing').length;
+ const nodes='<div class="mon">'+sr.map(x=>'<div class="mn '+x.state+'"><i></i><b>'+mlabel(x.k,true)+'</b><span>'+STLAB[x.state]+'</span></div>').join('')+'</div>';
+ const alert=pat.length&&sr[sr.length-1].state!=='clear'||ongoing?'<div class="note warn">'+ic('alert')+'<p><b>'+PATTERN_MSG+'</b><br><span class="small">Reported in: '+pat.map(x=>mlabel(x.k,true)).join(', ')+'. This is a pattern in what you entered, not a diagnosis or risk score.</span></p></div>':'';
+ let b='';
+ if(tab==='overview')b=alert+'<div class="grid g3"><div class="card"><h3>'+ic('user')+' My Medical Profile</h3><p class="small muted" style="margin:0">'+esc(u.name)+'<br>Born '+fmt(u.dob)+'<br>'+esc(u.phone)+'<br>Emergency: '+esc(u.emergency||'Not added')+'</p></div><div class="card"><h3>'+ic('calendar')+' My Screening Reminders</h3>'+(n?'<p><b>'+esc(n.type)+'</b><br><span class="muted">'+fmt(n.date)+' · '+esc(n.time)+'</span></p>':'<p class="muted">Nothing scheduled.</p>')+'<a class="btn btn-soft btn-sm" href="#reminders">Manage</a></div><div class="card"><h3>'+ic('steth')+' My Doctor</h3>'+(doc?'<p style="margin:0"><b>'+esc(doc.name)+'</b><br><span class="muted small">'+esc(doc.specialty)+' · '+esc(doc.clinic)+'</span></p>':'<p class="muted">No doctor connected yet.</p><a class="btn btn-soft btn-sm" href="#privacy">Authorize a doctor</a>')+'</div></div>'+
+ '<div class="card" style="margin-top:16px"><div class="sec-h" style="margin-bottom:12px"><h3 style="margin:0">'+ic('trend')+' My health pattern · last 6 months</h3><button class="btn btn-soft btn-sm" data-act="tab" data-k="dashTab" data-v="checkin">Add this month</button></div>'+nodes+'</div>'+
+ '<div class="grid g2" style="margin-top:16px;align-items:start"><div class="card soft"><h3>'+ic('heart')+' This month’s awareness tip</h3><p>'+TIPS[parseInt(curMonth().slice(5),10)-1]+'</p></div><div class="card"><h3>'+ic('bell')+' Latest notifications</h3>'+(S.notifs.filter(x=>x.userId===u.id&&x.via.includes('web')).slice(0,3).map(x=>'<div class="li"><div class="grow"><h4>'+esc(x.title)+'</h4><span class="small muted">'+esc(x.body)+'</span></div></div>').join('')||'<p class="muted">All caught up.</p>')+'<a class="btn btn-soft btn-sm" href="#notifications">Open center</a></div></div>';
+ if(tab==='checkin')b=alert+checkinForm(u);
+ if(tab==='reports')b=alert+'<div class="card"><h3>'+ic('file')+' Monthly reports</h3>'+(recs.length?recs.map(r=>{const st=(sr.find(x=>x.k===r.month)||{}).state||(flagged(r)?'new':'clear');return '<div class="li"><div class="grow"><h4>'+mlabel(r.month)+' <span class="pill '+(st==='clear'?'good':st==='empty'?'info':'warn')+'">'+STLAB[st]+'</span>'+(r.status==='draft'?' <span class="pill">In progress</span>':'')+'</h4><span class="small muted">'+apptsIn(u,r.month)+' appointment(s) completed'+(r.auto&&!r.submitted?' · created automatically at month end':'')+'</span></div><div class="btns" style="margin:0"><button class="btn btn-soft btn-sm" data-act="viewrep" data-id="'+r.id+'">View</button><button class="btn btn-ghost btn-sm" data-act="sharerep" data-id="'+r.id+'">'+ic('send')+' Share</button></div></div>'}).join(''):'<p class="muted">Your first report is created at the end of this month.</p>')+'<p class="small muted">PDF download is not available inside this web page. Open a report and use Copy, or share it securely with your doctor.</p></div>'+
+ '<div class="card" style="margin-top:16px"><h3>Comparison of previous months</h3><div class="scroll"><table class="tbl"><thead><tr><th>Month</th><th>New symptoms</th><th>Changes</th><th>Visits</th><th>Results</th></tr></thead><tbody>'+sr.slice().reverse().map(x=>'<tr><td>'+mlabel(x.k,true)+'</td><td>'+(x.rec?(x.rec.sym==='yes'?'Yes':'No'):'—')+'</td><td>'+(x.rec&&x.rec.changes.length?esc(x.rec.changes.length+' reported'):'None')+'</td><td>'+apptsIn(u,x.k)+'</td><td>'+(x.rec&&x.rec.results?'Entered':'—')+'</td></tr>').join('')+'</tbody></table></div></div><div class="card" style="margin-top:16px"><h3>Visual timeline</h3>'+nodes+'</div>';
+ if(tab==='early')b='<div class="grid g2"><div class="card"><h3>'+ic('search')+' Early detection checklist</h3><ul class="muted" style="padding-left:18px;margin:0"><li>Know how your breasts normally look and feel.</li><li>Do your monthly check-in on a regular day.</li><li>Keep screening appointments your doctor recommends.</li><li>Report any lasting change to a healthcare professional.</li></ul></div><div class="card"><h3>'+ic('book')+' Keep learning</h3><p class="muted">Explore warning signs, risk factors and myths.</p><div class="btns" style="margin:0"><a class="btn btn-soft btn-sm" href="#awareness">Awareness</a><a class="btn btn-soft btn-sm" href="#quiz">Quiz</a></div></div></div>';
+ const msgs=S.pnotes.filter(x=>x.userId===u.id);
+ b+=(msgs.length?'<div class="card" style="margin-top:16px"><h3>'+ic('steth')+' Messages from my doctor</h3>'+msgs.map(m=>'<div class="ent">'+esc(m.text)+'<div class="by">'+esc(m.doctor)+' · '+fmt(m.date)+'</div></div>').join('')+'</div>':'')+
+ '<div class="card soft" style="margin-top:16px"><h3>Account status</h3>'+(u.dxRequest&&u.dxRequest.status==='pending'?'<p class="muted" style="margin:0">'+ic('clock')+' Your diagnosis request is waiting for doctor verification.</p>':'<p class="muted">If a doctor has confirmed a breast cancer diagnosis, you can switch to a Cancer Patient Account. Your doctor must verify it.</p><button class="btn btn-soft btn-sm" data-act="dxreq">I have been diagnosed</button>')+'</div>';
+ return '<div class="dash-h prev"><div><span class="pill">Prevention Account</span><h1 style="margin-top:10px">Welcome Back!</h1><p class="muted" style="margin:0">'+esc(u.name.split(' ')[0])+', here is your breast health this month.</p></div><a class="btn btn-primary" href="#reminders">'+ic('calendar')+' Screening reminders</a></div><div class="tabs">'+[['overview','Overview'],['checkin','Monthly Check-in'],['reports','Monthly Reports'],['early','Early Detection']].map(t=>'<button class="'+(tab===t[0]?'on':'')+'" data-act="tab" data-k="dashTab" data-v="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>'+b}
+function cancDash(u){
+ const rec=S.rec[u.id];const tab=['overview','dx','chip','reports','recovery'].includes(UI.dashTab)?UI.dashTab:'overview';
+ const n=nextAppt(u),doc=myDoc(u);const al=rec.entries.filter(e=>e.kind==='test'&&e.flag==='review'&&!e.resolved);
+ const hb=rec.entries.filter(e=>e.title==='Hemoglobin'&&!isNaN(parseFloat(e.value))).sort((a,b)=>a.date.localeCompare(b.date));
+ const st=STATUS.find(s=>s.k===rec.status);
+ const stageTxt=rec.verified?'<b>'+esc(rec.stage||'Not recorded')+'</b><br><span class="small muted">Confirmed by '+esc(rec.stageBy||'doctor')+(rec.stageDate?' on '+fmt(rec.stageDate):'')+'</span>':'<span class="pill warn">Awaiting doctor verification</span>';
+ let b='';
+ if(al.length)b+='<div class="note bad">'+ic('alert')+'<p><b>'+REVIEW_MSG+'</b></p></div>';
+ if(tab==='overview')b+='<div class="grid g3"><div class="card"><h3>'+ic('user')+' My Medical Profile</h3><p class="small muted" style="margin:0">'+esc(u.name)+' · born '+fmt(u.dob)+'<br>Emergency: '+esc(u.emergency||'Not added')+'</p><p style="margin:10px 0 0">Stage: '+stageTxt+'</p></div><div class="card"><h3>'+ic('calendar')+' My Appointments</h3>'+(n?'<p><b>'+esc(n.type)+'</b><br><span class="muted">'+fmt(n.date)+' · '+esc(n.time)+'</span></p>':'<p class="muted">Nothing scheduled.</p>')+'<a class="btn btn-soft btn-sm" href="#reminders">Manage</a></div><div class="card"><h3>'+ic('steth')+' My Doctor</h3>'+(doc?'<p style="margin:0"><b>'+esc(doc.name)+'</b><br><span class="muted small">'+esc(doc.specialty)+'<br>'+esc(doc.clinic)+'<br>'+esc(doc.phone)+'</span></p>':'<p class="muted">No doctor connected.</p><a class="btn btn-soft btn-sm" href="#privacy">Authorize a doctor</a>')+'</div></div>'+
+ '<div class="card" style="margin-top:16px"><div class="sec-h" style="margin-bottom:10px"><h3 style="margin:0">'+ic('activity')+' My Cancer Journey</h3><a class="btn btn-soft btn-sm" href="#journey">Open full timeline</a></div><div class="prog">'+STAGES.map((s,i)=>'<div class="'+(i<rec.cur?'done':i===rec.cur?'active':'')+'"><i>'+(i<rec.cur?'✓':i+1)+'</i>'+s+'</div>').join('')+'</div></div>'+
+ '<div class="grid g2" style="margin-top:16px;align-items:start"><div class="card"><h3>'+ic('heart')+' My Recovery Progress</h3><p><span class="pill info">'+st.t+'</span></p><p class="muted small">Position set by your care team: step '+(rec.cur+1)+' of 6. This is not an automatic recovery score.</p>'+(hb.length>1?'<p class="small" style="margin-bottom:0"><b>Hemoglobin (g/dL), demo values</b></p>'+lineChart(hb.map(e=>({x:fmt(e.date).slice(0,6),y:parseFloat(e.value)})),[12,15.5]):'')+'</div><div class="card"><h3>'+ic('bell')+' Notifications</h3>'+(S.notifs.filter(x=>x.userId===u.id&&x.via.includes('web')).slice(0,4).map(x=>'<div class="li"><div class="grow"><h4>'+esc(x.title)+(x.read?'':' <span class="pill">New</span>')+'</h4><span class="small muted">'+esc(x.body)+'</span></div></div>').join('')||'<p class="muted">All caught up.</p>')+'<a class="btn btn-soft btn-sm" href="#notifications">Open center</a></div></div>';
+ if(tab==='dx'){
+  const months={};rec.entries.forEach(e=>{const k=e.date.slice(0,7);(months[k]=months[k]||[]).push(e)});
+  b+='<div class="grid g2" style="align-items:start"><div class="card"><h3>Diagnosis</h3><p>Stage: '+stageTxt+'</p><p class="muted small">Diagnosis date: '+(rec.dxDate?fmt(rec.dxDate):'Not yet recorded')+'</p>'+(rec.verified?'':'<div class="note warn">'+ic('clock')+'<p>Your doctor must verify your diagnosis and stage before they are shown as confirmed.</p></div>')+'</div><div class="card"><h3>Treatment history</h3>'+(rec.entries.filter(e=>e.kind==='treatment').map(e=>'<div class="ent"><b>'+esc(e.title)+'</b> <span class="pill">'+esc(e.tstatus)+'</span><br>'+esc(e.text)+'<div class="by">'+esc(e.doctor)+' · '+fmt(e.date)+'</div></div>').join('')||'<p class="muted">No treatment recorded yet.</p>')+'</div></div><div class="card" style="margin-top:16px"><h3>Monthly medical updates</h3>'+(Object.keys(months).sort().reverse().map(k=>'<div class="ent"><b>'+mlabel(k)+'</b><br>'+months[k].map(e=>'<span class="small">• '+esc(e.title)+' ('+esc(e.doctor)+')</span>').join('<br>')+'</div>').join('')||'<p class="muted">Monthly updates appear after your doctor adds records.</p>')+'<p class="small muted">Compiled from verified entries by authorized doctors only.</p></div>'}
+ if(tab==='chip')b+='<div class="grid g2" style="align-items:start"><div class="card"><h3>'+ic('chip')+' Smart Medical Chip profile</h3><span class="tag">Proposed future concept</span><p class="muted">Preview only. No chip is issued and nothing here is detected by a device. Records come from verified doctors.</p><div class="li"><div class="grow"><h4>Chip concept preview</h4><span class="small muted">'+(u.chip?'Linked profile ID TP-'+u.id.toUpperCase()+'-0042 (demo)':'Switched off')+'</span></div><label class="sw"><input type="checkbox" data-act="chipme" '+(u.chip?'checked':'')+' aria-label="Chip preview"><i></i></label></div><a class="btn btn-soft btn-sm" href="#chip">See how it could work</a></div><div class="card"><h3>What it could open</h3><ul class="muted" style="padding-left:18px;margin:0"><li>Medical history and diagnosis information</li><li>Treatment records and test results</li><li>Follow-up appointments and recovery updates</li></ul></div></div>';
+ if(tab==='reports')b+='<div class="card"><h3>'+ic('file')+' My Medical Reports</h3>'+(rec.reports.length?rec.reports.map(r=>'<div class="li"><div class="grow"><h4>'+esc(r.title)+'</h4><span class="small muted">'+esc(r.name)+' · '+esc(r.size)+' · '+esc(r.doctor)+' · '+fmt(r.date)+'</span></div><button class="btn btn-soft btn-sm" data-act="viewdoc" data-id="'+r.id+'">Open securely</button></div>').join(''):'<p class="muted">Reports uploaded by your doctor appear here.</p>')+'</div>';
+ if(tab==='recovery')b+=recoveryBody(u);
+ b+='<div class="card soft" style="margin-top:16px"><h3>Account status</h3><p class="muted" style="margin:0">Diagnosis and stage changes are made by your authorized doctor. After treatment you can keep using the follow-up and recovery tools.</p></div>';
+ return '<div class="dash-h canc"><div><span class="pill">Cancer Patient Account</span><h1 style="margin-top:10px">Welcome Back!</h1><p style="margin:0;opacity:.92">'+esc(u.name.split(' ')[0])+' · '+st.t+'</p></div><a class="btn" style="background:#fff;color:#7d1440" href="#journey">'+ic('activity')+' My journey</a></div><div class="tabs">'+[['overview','Overview'],['dx','Diagnosis & Treatment'],['chip','Smart Chip'],['reports','Medical Reports'],['recovery','Recovery']].map(t=>'<button class="'+(tab===t[0]?'on':'')+'" data-act="tab" data-k="dashTab" data-v="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>'+b}
+function vPatient(){const g=needPatient('Log in to open your personal dashboard.');if(g)return g;const u=me();return u.type==='cancer'&&S.rec[u.id]?cancDash(u):prevDash(u)}
+const pending=p=>(p.dxRequest&&p.dxRequest.status==='pending')||(p.type==='cancer'&&!(S.rec[p.id]&&S.rec[p.id].verified));
+function recFields(kind,p){
+ const rec=S.rec[p.id];const stSel='<div class="field"><label for="f-st">Journey step</label><select id="f-st" name="stage">'+STAGES.map((s,i)=>'<option value="'+i+'"'+(rec&&rec.cur===i?' selected':'')+'>'+s+'</option>').join('')+'</select></div>';
+ const T=(id,l,n,v)=>'<div class="field"><label for="'+id+'">'+l+'</label><input id="'+id+'" name="'+n+'" value="'+(v||'')+'"></div>';
+ const A=(id,l,n)=>'<div class="field"><label for="'+id+'">'+l+'</label><textarea id="'+id+'" name="'+n+'"></textarea></div>';
+ if(kind==='update')return stSel+T('f-t','Title','title')+A('f-x','Medical update','text')+'<label class="opt"><input type="checkbox" name="move"> Move the patient’s timeline to this step</label>';
+ if(kind==='note'||kind==='followup')return (rec?stSel:'')+A('f-x',kind==='followup'?'Follow-up note':'Doctor’s note','text');
+ if(kind==='test')return stSel+T('f-t','Test name','title')+'<div class="row2">'+T('f-v','Result','value')+T('f-u','Unit','unit')+'</div>'+T('f-rf','Reference range','ref')+'<div class="field"><label for="f-fl">Doctor’s assessment</label><select id="f-fl" name="flag"><option value="ok">Reviewed, no action needed</option><option value="review">Needs further review</option></select></div>'+A('f-x','Notes','text');
+ if(kind==='treatment')return stSel+T('f-t','Treatment','title')+'<div class="field"><label for="f-ts">Status</label><select id="f-ts" name="tstatus"><option>Planned</option><option>In progress</option><option>Completed</option></select></div>'+A('f-x','Details','text');
+ if(kind==='report')return T('f-t','Report title','title')+'<div class="field"><label for="f-f">Report file</label><input id="f-f" name="file" type="file"></div>'+A('f-x','Summary for the patient','text');
+ if(kind==='appt')return '<div class="field"><label for="f-ty">Appointment type</label><select id="f-ty" name="atype">'+ATYPES.map(t=>'<option>'+t+'</option>').join('')+'</select></div><div class="row2"><div class="field"><label for="f-d">Date</label><input id="f-d" type="date" name="date" value="'+addDays(today(),14)+'"></div><div class="field"><label for="f-ti">Time</label><input id="f-ti" type="time" name="time" value="09:00"></div></div>'+T('f-p','Location','place',esc(user(S.session).clinic))+A('f-x','Notes','text');
+ if(kind==='status')return '<div class="field"><label for="f-s">Status label</label><select id="f-s" name="status">'+STATUS.map(s=>'<option value="'+s.k+'"'+(rec.status===s.k?' selected':'')+'>'+s.t+'</option>').join('')+'</select></div><div class="field"><label for="f-c">Timeline position</label><select id="f-c" name="cur">'+STAGES.map((s,i)=>'<option value="'+i+'"'+(rec.cur===i?' selected':'')+'>'+s+'</option>').join('')+'</select></div><div class="field"><label for="f-g">Verified cancer stage</label><select id="f-g" name="cstage"><option value="">No change</option>'+STG.map(s=>'<option>'+s[0]+'</option>').join('')+'</select></div>';
+ return ''}
+function recForm(p){
+ const rec=S.rec[p.id];const kinds=rec?[['update','Medical update'],['note','Doctor’s note'],['followup','Follow-up note'],['test','Test result'],['treatment','Treatment record'],['report','Upload report'],['appt','Schedule appointment'],['status','Status, timeline & stage']]:[['note','Message to patient'],['appt','Schedule appointment']];
+ return '<form class="form" data-form="rec"><input type="hidden" name="pid" value="'+p.id+'"><p class="small muted">Recorded as <b>'+esc(me().name)+'</b> on '+fmt(today())+'.</p><div class="field"><label for="f-k">What would you like to add?</label><select id="f-k" name="kind" data-change="reckind">'+kinds.map(k=>'<option value="'+k[0]+'">'+k[1]+'</option>').join('')+'</select></div><div id="recfields" class="form">'+recFields(kinds[0][0],p)+'</div><p class="err" role="alert"></p><button class="btn btn-primary" type="submit">Save to record</button></form>'}
+function vDoctor(){
+ const d=me();if(!d)return gate('Doctors sign in to see patients who have authorized them.','doctor');if(d.role!=='doctor')return wrongRole('doctor');
+ const pts=S.users.filter(p=>p.role==='patient'&&p.authorized.includes(d.id));
+ if(!UI.docPt||!pts.some(p=>p.id===UI.docPt))UI.docPt=pts[0]?pts[0].id:null;
+ const p=pts.find(x=>x.id===UI.docPt);const pend=pts.filter(pending);
+ const flags=pts.reduce((n,x)=>n+((S.rec[x.id]&&S.rec[x.id].entries)||[]).filter(e=>e.flag==='review'&&!e.resolved).length,0);
+ const week=S.appts.filter(a=>pts.some(x=>x.id===a.userId)&&a.status==='upcoming'&&diffDays(a.date,today())>=0&&diffDays(a.date,today())<=7).length;
+ let h='<div class="dash-h canc"><div><span class="pill">Doctor Dashboard</span><h1 style="margin-top:10px">'+esc(d.name)+'</h1><p style="margin:0;opacity:.92">'+esc(d.specialty)+' · '+esc(d.clinic)+'</p></div></div><div class="grid g4" style="margin-bottom:18px"><div class="card stat"><b>'+pts.length+'</b>authorized patients</div><div class="card stat"><b>'+pend.length+'</b>awaiting verification</div><div class="card stat"><b>'+flags+'</b>results flagged</div><div class="card stat"><b>'+week+'</b>visits in 7 days</div></div>';
+ if(!pts.length)return h+'<div class="card tc"><h3>No patients have authorized you yet</h3><p class="muted">Patients grant access under Privacy settings. Doctors can only open records of patients who consent.</p></div>';
+ h+='<div class="split"><div><h4>My patients</h4>'+pts.map(x=>'<button class="pt'+(x.id===UI.docPt?' on':'')+'" data-act="docsel" data-id="'+x.id+'"><span class="av">'+esc(x.name.charAt(0))+'</span><span><b>'+esc(x.name)+'</b><small>'+(x.type==='cancer'?'Cancer patient':'Prevention')+(pending(x)?' · verify':'')+'</small></span></button>').join('')+'</div><div>';
+ addAudit(p.id,d.name,'Opened medical record');save();
+ const rec=S.rec[p.id];const tabs=rec?[['overview','Overview'],['timeline','Timeline'],['tests','Tests & Reports'],['treat','Treatment'],['appts','Appointments']]:[['overview','Overview'],['monthly','Shared monthly records'],['appts','Appointments']];
+ const tab=tabs.some(t=>t[0]===UI.docTab)?UI.docTab:'overview';
+ h+='<div class="card" style="margin-bottom:14px"><div class="sec-h" style="margin:0"><div><h2 style="margin:0;font-size:1.5rem">'+esc(p.name)+'</h2><span class="small muted">Born '+fmt(p.dob)+' · '+esc(p.phone)+' · '+(rec&&rec.verified?'<b>'+esc(rec.stage||'')+'</b> verified':'')+'</span></div><button class="btn btn-primary" data-act="docadd" data-id="'+p.id+'">'+ic('plus')+' Add to record</button></div>'+(pending(p)?'<div class="note warn">'+ic('clock')+'<p>Diagnosis not yet verified.</p><span class="btns" style="margin:0 0 0 auto"><button class="btn btn-primary btn-sm" data-act="verify" data-id="'+p.id+'">Verify diagnosis</button><button class="btn btn-ghost btn-sm" data-act="reject" data-id="'+p.id+'">Cannot verify</button></span></div>':'')+'</div><div class="tabs">'+tabs.map(t=>'<button class="'+(tab===t[0]?'on':'')+'" data-act="tab" data-k="docTab" data-v="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>';
+ const entRow=e=>'<div class="ent"><b>'+esc(e.title)+'</b> <span class="pill info">'+STAGES[e.stage]+'</span>'+(e.kind==='test'?' · '+esc(e.value)+' '+esc(e.unit)+(e.flag==='review'&&!e.resolved?' <span class="pill bad">Needs review</span> <button class="btn btn-soft btn-sm" data-act="resolve" data-id="'+e.id+'" data-pid="'+p.id+'">Mark reviewed</button>':''):'')+'<br>'+esc(e.text)+'<div class="by">'+esc(e.doctor)+' · '+fmt(e.date)+'</div></div>';
+ if(tab==='overview'){const st=rec?STATUS.find(s=>s.k===rec.status):null;
+  h+='<div class="grid g2" style="align-items:start"><div class="card"><h3>Profile & history</h3><p class="small muted" style="margin:0">Emergency contact: '+esc(p.emergency||'Not added')+'<br>Account: '+(p.type==='cancer'?'Cancer patient':'Prevention')+'<br>Diagnosis: '+(rec&&rec.verified?'verified, '+fmt(rec.dxDate):'none verified')+'</p></div><div class="card"><h3>Recovery follow-up</h3>'+(rec?'<p><span class="pill info">'+st.t+'</span></p><p class="small muted">Timeline position: '+STAGES[rec.cur]+'</p><button class="btn btn-soft btn-sm" data-act="docadd" data-id="'+p.id+'">Update status</button>':'<p class="muted">Prevention account. Doctors see only monthly records the patient chooses to share.</p>')+'</div></div>'+(rec?'<div class="card" style="margin-top:14px"><h3>Latest activity</h3>'+rec.entries.slice(-4).reverse().map(entRow).join('')+'</div>':'')}
+ if(tab==='timeline')h+=timeline(rec);
+ if(tab==='tests')h+='<div class="card"><h3>Test results</h3>'+(rec.entries.filter(e=>e.kind==='test').reverse().map(entRow).join('')||'<p class="muted">None.</p>')+'</div><div class="card" style="margin-top:14px"><h3>Reports</h3>'+(rec.reports.map(r=>'<div class="li"><div class="grow"><h4>'+esc(r.title)+'</h4><span class="small muted">'+esc(r.name)+' · '+esc(r.doctor)+' · '+fmt(r.date)+'</span></div><button class="btn btn-soft btn-sm" data-act="viewdoc" data-id="'+r.id+'" data-pid="'+p.id+'">Open</button></div>').join('')||'<p class="muted">No reports.</p>')+'</div>';
+ if(tab==='treat')h+='<div class="card"><h3>Treatment records</h3>'+(rec.entries.filter(e=>e.kind==='treatment'||e.kind==='note'||e.kind==='followup').reverse().map(entRow).join('')||'<p class="muted">None.</p>')+'</div>';
+ if(tab==='appts')h+='<div class="card"><h3>Appointment schedule</h3>'+(myAppts(p).sort((a,b)=>b.date.localeCompare(a.date)).map(a=>apptRow(a,false)).join('')||'<p class="muted">None.</p>')+'</div>';
+ if(tab==='monthly'){const sh=S.shared.filter(s=>s.userId===p.id&&s.doctorId===d.id);h+='<div class="card"><h3>Shared monthly records</h3>'+(sh.map(s=>{const r=monthEntries(p.id,s.month);return r?'<div class="li"><div class="grow"><h4>'+mlabel(s.month)+'</h4><pre class="rep">'+esc(reportText(r,p))+'</pre><span class="by">Shared '+fmt(s.date)+'</span></div></div>':''}).join('')||'<p class="muted">The patient has not shared any monthly records.</p>')+'</div>'}
+ return h+'</div></div>'}
+function verifyForm(p){return '<form class="form" data-form="verify"><input type="hidden" name="pid" value="'+p.id+'"><p class="muted">Confirm only if you have reviewed the patient’s verified medical tests.</p><div class="field"><label for="v-s">Cancer stage</label><select id="v-s" name="stage">'+STG.map(s=>'<option>'+s[0]+'</option>').join('')+'</select></div><div class="field"><label for="v-d">Diagnosis date</label><input id="v-d" type="date" name="date" value="'+esc((S.rec[p.id]&&S.rec[p.id].dxDate)||(p.dxRequest&&p.dxRequest.date)||today())+'"></div><div class="field"><label for="v-n">Note</label><textarea id="v-n" name="note"></textarea></div><button class="btn btn-primary" type="submit">Verify as '+esc(me().name)+'</button></form>'}
+const routes={home:vHome,about:vAbout,awareness:vAwareness,quiz:vQuiz,support:vSupport,reminders:vReminders,chip:vChip,journey:vJourney,recovery:vRecovery,patient:vPatient,doctor:vDoctor,contact:vContact,register:vRegister,login:vLogin,privacy:vPrivacy,notifications:vNotifications};
+function render(anim){
+ const r=route();const v=routes[r]||vHome;const m=$('#main');
+ const keep=$$('#modal [name]').length;
+ try{m.innerHTML=v()}catch(e){m.innerHTML='<div class="card"><h2>Something went wrong</h2><p class="muted">Please go back to the home page.</p><a class="btn btn-primary" href="#home">Home</a></div>';console.error(e)}
+ if(anim){m.classList.remove('enter');void m.offsetWidth;m.classList.add('enter');window.scrollTo(0,0)}
+ renderHeader();renderFooter();
+}
+function login(id){S.session=id;UI.dashTab='overview';UI.docTab='overview';UI.docPt=null;tick();save();UI.menu=false;location.hash=user(id).role==='doctor'?'doctor':'patient';render(true)}
+function setErr(f,t){const e=$('.err',f);if(e)e.textContent=t;return false}
+const forms={
+ login(f){const v=Object.fromEntries(new FormData(f));const u=S.users.find(x=>x.email.toLowerCase()===String(v.email).trim().toLowerCase()&&x.pw===pwh(String(v.pw)));if(!u)return setErr(f,'The email or password did not match. Try again or use a demo account.');login(u.id);toast('Welcome back, '+u.name.split(' ')[0])},
+ register(f){const v=Object.fromEntries(new FormData(f));const email=String(v.email||'').trim().toLowerCase();
+  if(!String(v.name||'').trim())return setErr(f,'Please enter your full name.');
+  if(!/^\S+@\S+\.\S+$/.test(email))return setErr(f,'Please enter a valid email address.');
+  if(S.users.some(x=>x.email.toLowerCase()===email))return setErr(f,'An account with this email already exists.');
+  if(String(v.pw||'').length<8)return setErr(f,'Password must be at least 8 characters.');
+  if(v.pw!==v.pw2)return setErr(f,'The two passwords do not match.');
+  if(!v.dob||v.dob>today())return setErr(f,'Please enter your date of birth.');
+  if(!String(v.phone||'').trim())return setErr(f,'Please enter your phone number.');
+  if(!v.consent)return setErr(f,'Please accept the privacy notice to continue.');
+  const role=v.role==='doctor'?'doctor':'patient';
+  const u={id:uid('u'),role:role,type:role==='patient'?(v.dx==='yes'?'cancer':'prevention'):undefined,name:v.name.trim(),email:email,pw:pwh(v.pw),dob:v.dob,phone:v.phone,emergency:v.emergency||'',notifyMethod:'both',remind:3,authorized:[],chip:false,dxRequest:null,created:today()};
+  if(role==='doctor'){u.specialty=v.specialty||'General practice';u.clinic='Independent practice (demo)'}
+  else{if(v.doc){u.authorized=[v.doc];notify(v.doc,'account','New patient authorization',u.name+' granted you access to their record.')}
+   if(u.type==='cancer'){S.rec[u.id]={verified:false,stage:null,dxDate:null,status:'treatment',cur:0,entries:[],reports:[]};if(v.doc)notify(v.doc,'account','New diagnosis verification request',u.name+' is waiting for diagnosis verification.')}}
+  S.users.push(u);notify(u.id,'account','Welcome to Think Pink','Your '+(role==='doctor'?'doctor':u.type==='cancer'?'cancer patient':'prevention')+' account is ready.');login(u.id);toast('Account created')},
+ contact(f){const v=Object.fromEntries(new FormData(f));if(!v.name.trim()||!/^\S+@\S+\.\S+$/.test(v.email)||!v.subject.trim()||!v.message.trim())return setErr(f,'Please complete every field with a valid email.');S.messages.push(Object.assign({date:today()},v));save();UI.sent=true;render()},
+ forgot(f){const v=Object.fromEntries(new FormData(f));const u=S.users.find(x=>x.email.toLowerCase()===String(v.email).trim().toLowerCase());if(!u||String(v.pw).length<8||v.pw!==v.pw2)return setErr(f,'Use a registered email and matching passwords of at least 8 characters.');u.pw=pwh(v.pw);save();closeModal();toast('Password updated. You can log in now.')},
+ prefs(f){const v=Object.fromEntries(new FormData(f)),u=me();u.notifyMethod=v.method;u.remind=+v.days;save();toast('Preferences saved')},
+ appt(f){const v=Object.fromEntries(new FormData(f)),u=me();
+  if(!v.date)return setErr(f,'Please choose a date.');
+  if(v.mode==='resched'){const a=S.appts.find(x=>x.id===v.id);a.moved=a.date;a.date=v.date;a.time=v.time;notify(u.id,'appointment','Appointment rescheduled',a.type+' moved to '+fmt(a.date)+' at '+a.time+'.')}
+  else if(v.id){const a=S.appts.find(x=>x.id===v.id);Object.assign(a,{type:v.type,date:v.date,time:v.time,place:v.place,notes:v.notes,remind:+v.remind});notify(u.id,'appointment','Appointment updated',a.type+' on '+fmt(a.date)+'.')}
+  else{if(v.date<today())return setErr(f,'Choose today or a future date.');S.appts.push({id:uid('a'),userId:u.id,type:v.type,date:v.date,time:v.time,place:v.place,notes:v.notes,status:'upcoming',remind:+v.remind,by:'You'});notify(u.id,'appointment','Reminder set','We will remind you '+v.remind+' day(s) before your '+v.type+' on '+fmt(v.date)+'.')}
+  tick();closeModal();render();toast('Appointment saved')},
+ complete(f){const v=Object.fromEntries(new FormData(f));const a=S.appts.find(x=>x.id===v.id);a.status='completed';a.result=v.result;save();closeModal();render();toast('Marked as completed')},
+ checkin(f){const fd=new FormData(f),u=me(),cm=curMonth();const ch=fd.getAll('ch').map(i=>CHANGES[+i]);
+  let r=monthEntries(u.id,cm);if(!r){r={id:uid('m'),userId:u.id,month:cm,status:'draft'};S.monthly.push(r)}
+  Object.assign(r,{sym:fd.get('sym'),changes:ch,note:fd.get('note'),results:fd.get('results'),concerns:fd.get('concerns'),submitted:true,auto:false});
+  if(flagged(r)){const prev=monthEntries(u.id,addM(cm,-1));notify(u.id,'screening',flagged(prev)?'Repeated report in your monthly records':'Change noted in your monthly records',PATTERN_MSG,'pattern:'+cm)}
+  save();render();toast('Check-in saved')},
+ dxreq(f){const v=Object.fromEntries(new FormData(f)),u=me();if(!v.date)return setErr(f,'Please add an approximate date.');u.dxRequest={status:'pending',date:v.date,doctorId:v.doc};if(!u.authorized.includes(v.doc))u.authorized.push(v.doc);notify(v.doc,'account','New diagnosis verification request',u.name+' is waiting for diagnosis verification.');notify(u.id,'account','Verification requested','Your doctor will verify your diagnosis before your account changes.');save();closeModal();render();toast('Request sent to your doctor')},
+ verify(f){const v=Object.fromEntries(new FormData(f)),d=me(),p=user(v.pid);if(!p.authorized.includes(d.id))return;
+  let rec=S.rec[p.id]||(S.rec[p.id]={verified:false,entries:[],reports:[],status:'treatment',cur:0});
+  Object.assign(rec,{verified:true,stage:v.stage,stageBy:d.name,stageDate:today(),dxDate:v.date,cur:Math.max(rec.cur,0)});
+  rec.entries.push({id:uid('e'),stage:0,kind:'update',date:today(),doctor:d.name,title:'Diagnosis verified',text:v.stage+' confirmed. '+(v.note||'')});
+  p.type='cancer';if(p.dxRequest)p.dxRequest.status='verified';notify(p.id,'account','Diagnosis verified by '+d.name,'Your Cancer Patient dashboard now shows your confirmed stage and timeline.');save();closeModal();render();toast('Diagnosis verified')},
+ rec(f){const fd=new FormData(f),v=Object.fromEntries(fd),d=me(),p=user(v.pid);if(!p||!p.authorized.includes(d.id))return setErr(f,'You are not authorized for this patient.');
+  const rec=S.rec[p.id],k=v.kind,stage=+(v.stage||0);const base={id:uid('e'),stage:stage,date:today(),doctor:d.name};
+  if(k==='note'&&!rec){if(!String(v.text).trim())return setErr(f,'Please write a message.');S.pnotes.push({id:uid('n'),userId:p.id,doctor:d.name,date:today(),text:v.text});notify(p.id,'doctor','New message from '+d.name,v.text)}
+  else if(k==='appt'){if(!v.date)return setErr(f,'Choose a date.');S.appts.push({id:uid('a'),userId:p.id,type:v.atype,date:v.date,time:v.time,place:v.place,notes:v.text,status:'upcoming',remind:3,by:d.name});notify(p.id,'appointment','New appointment from '+d.name,v.atype+' on '+fmt(v.date)+' at '+v.time+'.')}
+  else if(k==='status'){rec.status=v.status;rec.cur=+v.cur;if(v.cstage&&rec.verified){rec.stage=v.cstage;rec.stageBy=d.name;rec.stageDate=today()}rec.entries.push(Object.assign(base,{stage:+v.cur,kind:'update',title:'Status updated',text:'Status set to '+STATUS.find(s=>s.k===v.status).t+'.'+(v.cstage?' Stage verified: '+v.cstage+'.':'')}));notify(p.id,'doctor','Your care status was updated by '+d.name,STATUS.find(s=>s.k===v.status).t)}
+  else if(k==='report'){const fl=v.file&&v.file.name?v.file:null;if(!String(v.title).trim())return setErr(f,'Add a report title.');rec.reports.push({id:uid('r'),name:fl?fl.name:v.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',title:v.title,date:today(),doctor:d.name,size:fl?Math.max(1,Math.round(fl.size/1024))+' KB':'—',summary:v.text||'No summary added.'});notify(p.id,'report','New medical report: '+v.title,'Open it securely under My Medical Reports.')}
+  else{if(!String(v.title||v.text).trim())return setErr(f,'Please add some details.');
+   const e=Object.assign(base,{kind:k,title:v.title||(k==='followup'?'Follow-up note':'Doctor note'),text:v.text||''});
+   if(k==='test'){Object.assign(e,{value:v.value,unit:v.unit,ref:v.ref,flag:v.flag})}
+   if(k==='treatment')e.tstatus=v.tstatus;
+   rec.entries.push(e);if(k==='update'&&v.move)rec.cur=stage;
+   if(k==='test'&&v.flag==='review')notify(p.id,'followup','Follow-up alert',REVIEW_MSG);
+   else notify(p.id,k==='test'||k==='followup'?'followup':'doctor','New '+(k==='test'?'test result':'update')+' from '+d.name,e.title)}
+  save();closeModal();render();toast('Saved with your name and today’s date')}
+};
+const acts={
+ menu(){UI.menu=!UI.menu;renderHeader()},
+ close(){closeModal()},
+ logout(){S.session=null;save();UI.menu=false;closeModal();location.hash='home';render(true);toast('You have been logged out')},
+ demo(a){login(a.dataset.id)},
+ tab(a){const k=a.dataset.k,v=a.dataset.v;if(k==='chipTab')UI.chip.tab=v;else UI[k]=v;render()},
+ flip(a){a.classList.toggle('open')},
+ affirm(){UI.affirm++;render()},
+ again(){UI.sent=false;render()},
+ copyq(){copy(ASK.map(g=>g[0]+':\n'+g.slice(1).map(x=>'- '+x).join('\n')).join('\n\n'),'Questions copied')},
+ qpick(a){const q=UI.quiz;if(q.sel!=null)return;q.sel=+a.dataset.i;if(q.sel===QUIZ[q.i][2])q.score++;render()},
+ qnext(){const q=UI.quiz;if(q.i+1<QUIZ.length){q.i++;q.sel=null}else{q.done=true;if(S.quizBest==null||q.score>S.quizBest)S.quizBest=q.score;save()}render()},
+ qrestart(){UI.quiz={i:0,sel:null,score:0,done:false};render()},
+ forgot(){modal('Reset password','<form class="form" data-form="forgot"><p class="small muted">In a live service a secure link would be emailed. In this demo you can set a new password directly.</p><div class="field"><label for="fp-e">Email Address</label><input id="fp-e" name="email" type="email"></div><div class="field"><label for="fp-p">New password</label><input id="fp-p" name="pw" type="password"></div><div class="field"><label for="fp-p2">Confirm new password</label><input id="fp-p2" name="pw2" type="password"></div><p class="err" role="alert"></p><button class="btn btn-primary" type="submit">Update password</button></form>')},
+ aadd(){modal('Add appointment',apptForm(null,'new'))},
+ aedit(a){modal('Edit appointment',apptForm(S.appts.find(x=>x.id===a.dataset.id),'edit'))},
+ aresched(a){modal('Reschedule appointment',apptForm(S.appts.find(x=>x.id===a.dataset.id),'resched'))},
+ acomplete(a){modal('Mark as completed','<form class="form" data-form="complete"><input type="hidden" name="id" value="'+a.dataset.id+'"><div class="field"><label for="ac-r">Result note (optional)</label><textarea id="ac-r" name="result"></textarea></div><button class="btn btn-primary" type="submit">Mark completed</button></form>')},
+ adel(a){const x=S.appts.find(y=>y.id===a.dataset.id);modal('Delete appointment','<p>Delete <b>'+esc(x.type)+'</b> on '+fmt(x.date)+'?</p><div class="btns"><button class="btn btn-danger" data-act="adelok" data-id="'+x.id+'">Delete</button><button class="btn btn-ghost" data-act="close">Keep it</button></div>')},
+ adelok(a){S.appts=S.appts.filter(x=>x.id!==a.dataset.id);save();closeModal();render();toast('Appointment deleted')},
+ markread(a){const n=S.notifs.find(x=>x.id===a.dataset.id);n.read=true;save();render()},
+ markall(){S.notifs.filter(n=>n.userId===S.session).forEach(n=>n.read=true);save();render();toast('All marked as read')},
+ chipconsent(a){UI.chip.consent=a.checked;if(!a.checked){UI.chip.tapped=false;UI.chip.log.unshift(fmt(today())+' · Consent withdrawn. Access closed.')}render()},
+ chiptap(){const c=UI.chip;if(!c.consent){c.log.unshift('Tap refused: patient consent is off.');toast('Tap refused. Consent is off.')}else{c.tapped=true;c.log.unshift(fmt(today())+' · Dr. Sara Al Mansoori opened the verified record.')}render()},
+ chipme(a){me().chip=a.checked;save();toast(a.checked?'Chip concept preview on':'Chip concept preview off');render()},
+ dxreq(){modal('Update my account status',dxRequestForm())},
+ closemonth(){const r=monthEntries(S.session,curMonth());if(!r){toast('Save a check-in first');return}r.status='final';save();render();toast('Report created')},
+ viewrep(a){const r=S.monthly.find(x=>x.id===a.dataset.id),u=me();const t=reportText(r,u);modal('Monthly Health Record','<pre class="rep" id="reptext">'+esc(t)+'</pre><div class="btns" style="margin:0"><button class="btn btn-primary btn-sm" data-act="copyrep">'+ic('copy')+' Copy report</button><button class="btn btn-soft btn-sm" data-act="sharerep" data-id="'+r.id+'">'+ic('send')+' Share with my doctor</button></div>')},
+ copyrep(){copy($('#reptext').textContent,'Report copied')},
+ sharerep(a){const u=me(),r=S.monthly.find(x=>x.id===a.dataset.id);if(!u.authorized.length){toast('Authorize a doctor first under Privacy');location.hash='privacy';closeModal();return}
+  u.authorized.forEach(did=>{if(!S.shared.some(s=>s.userId===u.id&&s.month===r.month&&s.doctorId===did)){S.shared.push({id:uid('s'),userId:u.id,month:r.month,doctorId:did,date:today()});notify(did,'report',u.name+' shared a monthly record',mlabel(r.month))}});save();closeModal();toast('Shared securely with your authorized doctor')},
+ viewdoc(a){const u=me();const pid=a.dataset.pid||u.id;const rec=S.rec[pid];const r=rec.reports.find(x=>x.id===a.dataset.id);addAudit(pid,u.name,'Opened report: '+r.title);modal(r.title,'<div class="note good">'+ic('lock')+'<p>Opened through a secure viewer. This access was logged.</p></div><p class="small muted">'+esc(r.name)+' · '+esc(r.size)+' · '+esc(r.doctor)+' · '+fmt(r.date)+'</p><p>'+esc(r.summary)+'</p>')},
+ auth(a){const u=me(),d=a.dataset.d;if(a.checked){if(!u.authorized.includes(d)){u.authorized.push(d);notify(d,'account','New patient authorization',u.name+' granted you access to their record.')}toast('Access granted')}else{u.authorized=u.authorized.filter(x=>x!==d);toast('Access withdrawn')}save();render()},
+ docsel(a){UI.docPt=a.dataset.id;UI.docTab='overview';render()},
+ docadd(a){const p=user(a.dataset.id);modal('Add to '+p.name+'’s record',recForm(p))},
+ verify(a){modal('Verify diagnosis',verifyForm(user(a.dataset.id)))},
+ reject(a){const p=user(a.dataset.id),d=me();if(p.dxRequest)p.dxRequest.status='declined';if(p.type==='cancer'&&!(S.rec[p.id]&&S.rec[p.id].verified)){p.type='prevention';delete S.rec[p.id]}notify(p.id,'account','Diagnosis could not be verified',d.name+' could not verify a diagnosis. Please contact your doctor.');save();render();toast('Patient notified')},
+ resolve(a){const e=S.rec[a.dataset.pid].entries.find(x=>x.id===a.dataset.id);e.resolved=true;e.resolvedBy=me().name;save();render();toast('Marked as reviewed')},
+ reset(){if(!UI.resetArm){UI.resetArm=true;render();return}UI.resetArm=false;S=seed();save();location.hash='home';render(true);toast('Demo data restored')}
+};
+function copy(t,msg){const ok=()=>toast(msg||'Copied');try{navigator.clipboard.writeText(t).then(ok,()=>toast('Select the text and copy it manually'))}catch(e){toast('Select the text and copy it manually')}}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const f=acts[a.dataset.act];if(!f)return;if(a.type==='checkbox')return;if(a.tagName==='A')e.preventDefault();f(a,e)});
+document.addEventListener('change',e=>{const a=e.target;
+ if(a.matches('input[type=checkbox][data-act]')){acts[a.dataset.act](a);return}
+ if(a.dataset.change==='role'){const doc=a.value==='doctor';$('#patOnly').hidden=doc;$('#docOnly').hidden=!doc}
+ if(a.dataset.change==='reckind'){const f=a.closest('form');$('#recfields').innerHTML=recFields(a.value,user(f.pid.value))}});
+document.addEventListener('input',e=>{if(e.target.dataset.input==='pw'){const v=e.target.value;let s=0;if(v.length>=8)s++;if(/[A-Z]/.test(v)&&/[a-z]/.test(v))s++;if(/\d/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;const m=$('#pwm');m.style.width=(s*25)+'%';m.style.background=s<2?'var(--bad)':s<3?'#e6a23c':'var(--good)'}});
+document.addEventListener('submit',e=>{const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();const h=forms[f.dataset.form];if(h)h(f)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal()});
+window.addEventListener('hashchange',()=>{UI.menu=false;UI.resetArm=false;if(route()!=='contact')UI.sent=false;if(!$('#modal').hidden)closeModal();render(true)});
+tick();
+if(!location.hash)history.replaceState(null,'','#home');
+render(true);
+})();
+</script>
+
+</body></html>
